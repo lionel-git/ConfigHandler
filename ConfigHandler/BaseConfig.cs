@@ -10,6 +10,9 @@ using System.Reflection;
 
 namespace ConfigHandler
 {
+    /// <summary>
+    /// Base class for definig configs
+    /// </summary>
     public class BaseConfig
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(BaseConfig));
@@ -19,21 +22,38 @@ namespace ConfigHandler
         /// </summary>
         public string ConfigFile { get; set; }
 
+        /// <summary>
+        /// Instanciate an empty BaseConfig
+        /// </summary>
         public BaseConfig()
         {
             ConfigFile = "baseConfig.json";
         }
 
+        /// <summary>
+        /// Load a config from a file
+        /// </summary>
+        /// <typeparam name="T">Type of config to create</typeparam>
+        /// <param name="path">Path to file</param>
+        /// <returns></returns>
         public static T Load<T>(string path)
         {
             return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
         }
 
+        /// <summary>
+        /// Save config to a file
+        /// </summary>
+        /// <param name="path"></param>
         public void Save(string path)
         {
             File.WriteAllText(path, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
 
+        /// <summary>
+        /// Return config as json string
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
@@ -74,6 +94,11 @@ namespace ConfigHandler
             }
         }
 
+        /// <summary>
+        /// Return name of config file to load
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public string CheckCmdConfigFile(string[] args)
         {
             foreach (var arg in args)
@@ -85,6 +110,10 @@ namespace ConfigHandler
             return ConfigFile;
         }
 
+        /// <summary>
+        /// Override the current config from cmdline parameters
+        /// </summary>
+        /// <param name="args"></param>
         public void UpdateFromCmdLine(string[] args)
         {
             foreach (var arg in args)

@@ -4,10 +4,53 @@
         <name>ConfigHandler</name>
     </assembly>
     <members>
+        <member name="T:ConfigHandler.BaseConfig">
+            <summary>
+            Base class for definig configs
+            </summary>
+        </member>
         <member name="P:ConfigHandler.BaseConfig.ConfigFile">
             <summary>
             Path to the config file
             </summary>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.#ctor">
+            <summary>
+            Instanciate an empty BaseConfig
+            </summary>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.Load``1(System.String)">
+            <summary>
+            Load a config from a file
+            </summary>
+            <typeparam name="T">Type of config to create</typeparam>
+            <param name="path">Path to file</param>
+            <returns></returns>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.Save(System.String)">
+            <summary>
+            Save config to a file
+            </summary>
+            <param name="path"></param>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.ToString">
+            <summary>
+            Return config as json string
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.CheckCmdConfigFile(System.String[])">
+            <summary>
+            Return name of config file to load
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.UpdateFromCmdLine(System.String[])">
+            <summary>
+            Override the current config from cmdline parameters
+            </summary>
+            <param name="args"></param>
         </member>
     </members>
 </doc>

@@ -6,12 +6,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace ConfigHandler
 {
     public class BaseConfig
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(BaseConfig));
+
+        /// <summary>
+        /// Path to the config file
+        /// </summary>
+        public string ConfigFile { get; set; }
+
+        public BaseConfig()
+        {
+            ConfigFile = "baseConfig.json";
+        }
 
         public static T Load<T>(string path)
         {

@@ -74,16 +74,24 @@ namespace ConfigHandler
             }
         }
 
+        public string CheckCmdConfigFile(string[] args)
+        {
+            foreach (var arg in args)
+            {
+                var tokens = arg.Split('=');
+                if (tokens[0].StartsWith("--") && tokens[0].Substring(2, tokens[0].Length - 2) == nameof(ConfigFile))
+                        return tokens[1];
+            }
+            return ConfigFile;
+        }
+
         public void UpdateFromCmdLine(string[] args)
         {
             foreach (var arg in args)
             {
-                if (arg != null)
-                {
-                    var tokens = arg.Split('=');
-                    if (tokens[0].StartsWith("--"))
-                        UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), tokens[1]);
-                }
+                var tokens = arg.Split('=');
+                if (tokens[0].StartsWith("--"))
+                    UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), tokens[1]);
             }
         }
     }

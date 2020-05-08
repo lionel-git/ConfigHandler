@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ConfigHandler</name>
+    </assembly>
+    <members>
+        <member name="P:ConfigHandler.BaseConfig.ConfigFile">
+            <summary>
+            Path to the config file
+            </summary>
+        </member>
+    </members>
+</doc>

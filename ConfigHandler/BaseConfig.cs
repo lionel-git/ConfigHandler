@@ -80,20 +80,28 @@ namespace ConfigHandler
         }
 
         // System.String => String
-        private string GetLastType(string typeString)
+        private string GetLastType(Type type)
         {
-            var tokens = typeString.Split('.');
+            var tokens = type.ToString().Split('.');
             return tokens[tokens.Length - 1];
+        }
+
+
+        private string GetGenericTypes(Type[] types)
+        {
+            var list = new List<string>();
+            foreach (var type in types)
+                list.Add(GetLastType(type));
+            if (list.Count > 0)
+                return $"<{Helpers.GetEnumerableAsString(list, ",")}>";
+            else
+                return "";
         }
 
         // System.Collections.Generic.List`1[System.String] => List<String>
         private string GetPropertyType(PropertyInfo property)
         {
-            var tokens = property.PropertyType.ToString().Split('[');
-            var list = new List<string>();
-            foreach (var token in tokens)
-                list.Add(GetLastType(token.Replace("]", "")));
-            return Helpers.GetEnumerableAsString(list, "<", ">", list.Count - 1);
+            return $"{property.PropertyType.Name}{GetGenericTypes(property.PropertyType.GetGenericArguments())}";
         }
 
         private string GetEnumValues(PropertyInfo property)
@@ -142,7 +150,7 @@ namespace ConfigHandler
                     if (property.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
                     {
                         var itemType = property.PropertyType.GetGenericArguments()[0];
-                        var listType = typeof(List<>).MakeGenericType(new[] { itemType });
+                        var listType = property.PropertyType.GetGenericTypeDefinition().MakeGenericType(new[] { itemType });
                         var newList = (IList)Activator.CreateInstance(listType);
                         var tokens = propertyValue.Split(",");
                         foreach (var token in tokens)
@@ -153,7 +161,7 @@ namespace ConfigHandler
                     }
                     else
                     {
-                        throw new Exception($"Generic type '{property.PropertyType.FullName}' not handled!");
+                        Logger.Warn($"Generic type '{property.PropertyType.FullName}' not handled!");
                     }
                 }
                 else if (propertyValue != null)

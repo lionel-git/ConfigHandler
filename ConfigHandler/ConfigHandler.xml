@@ -62,5 +62,41 @@
             </summary>
             <param name="args"></param>
         </member>
+        <member name="T:ConfigHandler.Helpers">
+            <summary>
+            Some Helpers
+            </summary>
+        </member>
+        <member name="M:ConfigHandler.Helpers.GetEnumerableAsString(System.Collections.IEnumerable,System.String,System.String,System.Int32)">
+            <summary>
+            Return the content of a collection as a string with separator
+            </summary>
+            <param name="list"></param>
+            <param name="separator"></param>
+            <param name="trailer"></param>
+            <param name="countTrailer"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ConfigHandler.OptionAttribute">
+            <summary>
+            Meta data for describing an option
+            </summary>
+        </member>
+        <member name="P:ConfigHandler.OptionAttribute.HelpMessage">
+            <summary>
+            Help on the option
+            </summary>
+        </member>
+        <member name="M:ConfigHandler.OptionAttribute.#ctor">
+            <summary>
+            Create an OptionAttribute
+            </summary>
+        </member>
+        <member name="M:ConfigHandler.OptionAttribute.#ctor(System.String)">
+            <summary>
+            Create an OptionAttribute
+            </summary>
+            <param name="helpMessage"></param>
+        </member>
     </members>
 </doc>

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ConfigHandler
 {
@@ -24,11 +25,13 @@ namespace ConfigHandler
         /// <summary>
         /// Path to the config file
         /// </summary>
+        [OptionAttribute("The config file to use for startup")]
         public string ConfigFile { get; set; }
 
         /// <summary>
         /// If set, display help
         /// </summary>
+        [OptionAttribute("Display help")]
         public bool Help { get; set; }
 
         /// <summary>
@@ -71,19 +74,8 @@ namespace ConfigHandler
         private string GetPropertyValue(PropertyInfo property)
         {
             var value = property.GetValue(this);
-            string valueString = value?.ToString();            
             var list = value as IList;
-            if (list != null)
-            {
-                var sb = new StringBuilder();
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (i > 0)
-                        sb.Append(",");
-                    sb.Append(list[i]);
-                }
-                valueString = sb.ToString();
-            }
+            string valueString = list != null ? Helpers.GetEnumerableAsString(list) : value?.ToString();
             return string.IsNullOrEmpty(valueString) ? EmptyValue : valueString;
         }
 
@@ -98,16 +90,25 @@ namespace ConfigHandler
         private string GetPropertyType(PropertyInfo property)
         {
             var tokens = property.PropertyType.ToString().Split('[');
-            var sb = new StringBuilder();
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                if (i > 0)
-                    sb.Append("<");
-                sb.Append(GetLastType(tokens[i]));
-            }
-            for (int i = 0; i < tokens.Length-1; i++)
-                sb.Append(">");
-            return sb.ToString();
+            var list = new List<string>();
+            foreach (var token in tokens)
+                list.Add(GetLastType(token.Replace("]", "")));
+            return Helpers.GetEnumerableAsString(list, "<", ">", list.Count - 1);
+        }
+
+        private string GetEnumValues(PropertyInfo property)
+        {
+            var itemType = property.PropertyType.IsGenericType ? property.PropertyType.GetGenericArguments()[0] : property.PropertyType;
+            if (itemType.IsEnum)
+                return Helpers.GetEnumerableAsString(Enum.GetValues(itemType));
+            else 
+                return null;
+        }
+
+        private string GetOptionHelp(PropertyInfo property)
+        {
+            var optionAttributes = property.GetCustomAttributes(typeof(OptionAttribute), false) as OptionAttribute[];
+            return optionAttributes.Length >= 1 ? optionAttributes.First().HelpMessage : null;
         }
 
         /// <summary>
@@ -115,11 +116,19 @@ namespace ConfigHandler
         /// </summary>
         public void ShowHelp()
         {
-            Console.WriteLine($"Syntax: {Assembly.GetExecutingAssembly().GetName().Name} --option1=... -option2=...");
-            Console.WriteLine($"List are comma separated");
+            Console.WriteLine($"Syntax: {Assembly.GetExecutingAssembly().GetName().Name} --option1=... --option2=...");
+            Console.WriteLine($"Lists are comma separated");
             foreach (var property in GetType().GetProperties())
             {
-                Console.WriteLine($"--{property.Name,-20} {GetPropertyValue(property),-25} ({GetPropertyType(property)})");
+                Console.WriteLine($"--{property.Name,-20}  ({GetPropertyType(property)})");
+                var helpMessage = GetOptionHelp(property);
+                if (!string.IsNullOrEmpty(helpMessage))
+                    Console.WriteLine($"\tHelp: {helpMessage,-30}");
+                Console.WriteLine($"\tCurent value: {GetPropertyValue(property),-25}");
+                var enumValues = GetEnumValues(property);
+                if (!string.IsNullOrEmpty(enumValues))
+                    Console.WriteLine($"\tPossible values: {enumValues}");
+                Console.WriteLine();
             }
         }
 

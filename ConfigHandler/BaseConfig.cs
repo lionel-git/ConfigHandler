@@ -74,7 +74,9 @@ namespace ConfigHandler
         private string GetPropertyValue(PropertyInfo property)
         {
             var value = property.GetValue(this);
-            var list = value as IList;
+            IEnumerable list = null;
+            if (property.PropertyType != typeof(string)) // string is an Enumerable of char
+                list = value as IEnumerable;
             string valueString = list != null ? Helpers.GetEnumerableAsString(list) : value?.ToString();
             return string.IsNullOrEmpty(valueString) ? EmptyValue : valueString;
         }
@@ -85,7 +87,6 @@ namespace ConfigHandler
             var tokens = type.ToString().Split('.');
             return tokens[tokens.Length - 1];
         }
-
 
         private string GetGenericTypes(Type[] types)
         {
@@ -145,33 +146,41 @@ namespace ConfigHandler
             var property = GetType().GetProperty(propertyName);
             if (property != null)
             {
-                if (property.PropertyType.IsGenericType)
+                var targetType = property.PropertyType;
+                if (targetType.IsGenericType)
                 {
-                    if (property.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+                    if (targetType.GetGenericArguments().Length == 1)
                     {
-                        var itemType = property.PropertyType.GetGenericArguments()[0];
-                        var listType = property.PropertyType.GetGenericTypeDefinition().MakeGenericType(new[] { itemType });
-                        var newList = (IList)Activator.CreateInstance(listType);
-                        var tokens = propertyValue.Split(",");
-                        foreach (var token in tokens)
+                        var itemType = targetType.GetGenericArguments()[0];
+                        var addMethod = targetType.GetMethod("Add");
+                        if (addMethod != null && addMethod.GetParameters().Length == 1)
                         {
-                            newList.Add(TypeDescriptor.GetConverter(itemType).ConvertFrom(token));
+                            var newList = Activator.CreateInstance(targetType);
+                            var tokens = propertyValue.Split(",");
+                            foreach (var token in tokens)
+                            {
+                                addMethod.Invoke(newList, new object[] { TypeDescriptor.GetConverter(itemType).ConvertFrom(token) });
+                            }
+                            property.SetValue(this, newList);
                         }
-                        property.SetValue(this, newList);
+                        else
+                        {
+                            Logger.Warn($"addMethod not ok: '{addMethod}'");
+                        }
                     }
                     else
                     {
-                        Logger.Warn($"Generic type '{property.PropertyType.FullName}' not handled!");
+                        Logger.Warn($"Generic type '{targetType.FullName}' not handled!");
                     }
                 }
                 else if (propertyValue != null)
                 {
-                    property.SetValue(this, TypeDescriptor.GetConverter(property.PropertyType).ConvertFrom(propertyValue));
+                    property.SetValue(this, TypeDescriptor.GetConverter(targetType).ConvertFrom(propertyValue));
                 }
                 else
                 {
                     // property Value null allowed for bool
-                    if (property.PropertyType == typeof(bool))
+                    if (targetType == typeof(bool))
                         property.SetValue(this, true);
                     else
                     {

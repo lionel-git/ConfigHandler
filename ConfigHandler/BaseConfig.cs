@@ -29,6 +29,11 @@ namespace ConfigHandler
         [OptionAttribute("The config file to use for startup")]
         public string ConfigFile { get; set; }
 
+        private static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings() 
+            { 
+                MissingMemberHandling = MissingMemberHandling.Error 
+            };
+
         /// <summary>
         /// If set, display help
         /// </summary>
@@ -51,7 +56,7 @@ namespace ConfigHandler
         /// <returns></returns>
         public static T Load<T>(string path)
         {
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            return JsonConvert.DeserializeObject<T>(File.ReadAllText(path), DefaultJsonSerializerSettings);
         }
 
         /// <summary>

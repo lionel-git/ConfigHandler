@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
+using System.Text;
 
 namespace ConfigHandler
 {
@@ -17,10 +19,17 @@ namespace ConfigHandler
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(BaseConfig));
 
+        private const String EmptyValue = "\"\"";
+
         /// <summary>
         /// Path to the config file
         /// </summary>
         public string ConfigFile { get; set; }
+
+        /// <summary>
+        /// If set, display help
+        /// </summary>
+        public bool Help { get; set; }
 
         /// <summary>
         /// Instanciate an empty BaseConfig
@@ -59,6 +68,61 @@ namespace ConfigHandler
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
+        private string GetPropertyValue(PropertyInfo property)
+        {
+            var value = property.GetValue(this);
+            string valueString = value?.ToString();            
+            var list = value as IList;
+            if (list != null)
+            {
+                var sb = new StringBuilder();
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (i > 0)
+                        sb.Append(",");
+                    sb.Append(list[i]);
+                }
+                valueString = sb.ToString();
+            }
+            return string.IsNullOrEmpty(valueString) ? EmptyValue : valueString;
+        }
+
+        // System.String => String
+        private string GetLastType(string typeString)
+        {
+            var tokens = typeString.Split('.');
+            return tokens[tokens.Length - 1];
+        }
+
+        // System.Collections.Generic.List`1[System.String] => List<String>
+        private string GetPropertyType(PropertyInfo property)
+        {
+            var tokens = property.PropertyType.ToString().Split('[');
+            var sb = new StringBuilder();
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                if (i > 0)
+                    sb.Append("<");
+                sb.Append(GetLastType(tokens[i]));
+            }
+            for (int i = 0; i < tokens.Length-1; i++)
+                sb.Append(">");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Display help
+        /// </summary>
+        public void ShowHelp()
+        {
+            Console.WriteLine($"Syntax: {Assembly.GetExecutingAssembly().GetName().Name} --option1=... -option2=...");
+            Console.WriteLine($"List are comma separated");
+            foreach (var property in GetType().GetProperties())
+            {
+                Console.WriteLine($"--{property.Name,-20} {GetPropertyValue(property),-25} ({GetPropertyType(property)})");
+            }
+        }
+
         private void UpdateProperty(string propertyName, string propertyValue)
         {
             var property = GetType().GetProperty(propertyName);
@@ -83,14 +147,28 @@ namespace ConfigHandler
                         throw new Exception($"Generic type '{property.PropertyType.FullName}' not handled!");
                     }
                 }
-                else
+                else if (propertyValue != null)
                 {
                     property.SetValue(this, TypeDescriptor.GetConverter(property.PropertyType).ConvertFrom(propertyValue));
-                }               
+                }
+                else
+                {
+                    // property Value null allowed for bool
+                    if (property.PropertyType == typeof(bool))
+                        property.SetValue(this, true);
+                    else
+                    {
+                        throw new Exception($"No value passed for '{propertyName}'?");
+                    }
+                }
             }
             else
             {
                 throw new Exception($"Cannot find property: '{propertyName}'");
+            }
+            if (propertyName == nameof(Help))
+            {
+                ShowHelp();
             }
         }
 
@@ -120,7 +198,10 @@ namespace ConfigHandler
             {
                 var tokens = arg.Split('=');
                 if (tokens[0].StartsWith("--"))
-                    UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), tokens[1]);
+                {
+                    var value = tokens.Length >= 2 ? tokens[1] : null;
+                    UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), value);
+                }
             }
         }
     }

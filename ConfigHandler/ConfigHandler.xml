@@ -14,6 +14,11 @@
             Path to the config file
             </summary>
         </member>
+        <member name="P:ConfigHandler.BaseConfig.Help">
+            <summary>
+            If set, display help
+            </summary>
+        </member>
         <member name="M:ConfigHandler.BaseConfig.#ctor">
             <summary>
             Instanciate an empty BaseConfig
@@ -38,6 +43,11 @@
             Return config as json string
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.ShowHelp">
+            <summary>
+            Display help
+            </summary>
         </member>
         <member name="M:ConfigHandler.BaseConfig.CheckCmdConfigFile(System.String[])">
             <summary>

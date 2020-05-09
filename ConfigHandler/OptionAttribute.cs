@@ -16,6 +16,11 @@ namespace ConfigHandler
         public string HelpMessage { get; set; }
 
         /// <summary>
+        /// Try to display value from ToString('DisplayFormat')
+        /// </summary>
+        public string DisplayFormat { get; set; }
+
+        /// <summary>
         /// Create an OptionAttribute
         /// </summary>
         public OptionAttribute()
@@ -26,9 +31,11 @@ namespace ConfigHandler
         /// Create an OptionAttribute
         /// </summary>
         /// <param name="helpMessage"></param>
-        public OptionAttribute(string helpMessage)
+        /// <param name="displayFormat"></param>
+        public OptionAttribute(string helpMessage, string displayFormat = null)
         {
             HelpMessage = helpMessage;
+            DisplayFormat = displayFormat;
         }
     }
 }

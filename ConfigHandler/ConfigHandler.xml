@@ -87,16 +87,22 @@
             Help on the option
             </summary>
         </member>
+        <member name="P:ConfigHandler.OptionAttribute.DisplayFormat">
+            <summary>
+            Try to display value from ToString('DisplayFormat')
+            </summary>
+        </member>
         <member name="M:ConfigHandler.OptionAttribute.#ctor">
             <summary>
             Create an OptionAttribute
             </summary>
         </member>
-        <member name="M:ConfigHandler.OptionAttribute.#ctor(System.String)">
+        <member name="M:ConfigHandler.OptionAttribute.#ctor(System.String,System.String)">
             <summary>
             Create an OptionAttribute
             </summary>
             <param name="helpMessage"></param>
+            <param name="displayFormat"></param>
         </member>
     </members>
 </doc>

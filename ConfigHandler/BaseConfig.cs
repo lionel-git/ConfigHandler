@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -71,13 +72,33 @@ namespace ConfigHandler
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
-        private string GetPropertyValue(PropertyInfo property)
+        private string GetValueFormatted(object value, string displayFormat, string propertyName)
+        {
+            if (string.IsNullOrEmpty(displayFormat) || value == null)
+                return value?.ToString();
+            else
+            {
+                // Try calling value.ToString('displayFormat');
+                //return $"Format:{value?.ToString()}";
+                var toStringMethod = value.GetType().GetMethod("ToString", new Type[] { displayFormat.GetType() });
+                if (toStringMethod != null)
+                    return toStringMethod.Invoke(value, new object[] { displayFormat }).ToString();
+                else
+                {
+                    Logger.Warn($"Formatting not supported for type '{value.GetType()}' (propertyName='{propertyName}')");
+                    return value.ToString();
+                }
+            }
+        }
+
+
+        private string GetPropertyValue(PropertyInfo property, string displayFormat)
         {
             var value = property.GetValue(this);
             IEnumerable list = null;
             if (property.PropertyType != typeof(string)) // string is an Enumerable of char
                 list = value as IEnumerable;
-            string valueString = list != null ? Helpers.GetEnumerableAsString(list) : value?.ToString();
+            string valueString = list != null ? Helpers.GetEnumerableAsString(list) : GetValueFormatted(value, displayFormat, property.Name);
             return string.IsNullOrEmpty(valueString) ? EmptyValue : valueString;
         }
 
@@ -114,10 +135,19 @@ namespace ConfigHandler
                 return null;
         }
 
-        private string GetOptionHelp(PropertyInfo property)
+        private string GetOptionHelp(PropertyInfo property, out string displayFormat)
         {
             var optionAttributes = property.GetCustomAttributes(typeof(OptionAttribute), false) as OptionAttribute[];
-            return optionAttributes.Length >= 1 ? optionAttributes.First().HelpMessage : null;
+            if (optionAttributes.Length >= 1)
+            {
+                displayFormat = optionAttributes.First().DisplayFormat;
+                return optionAttributes.First().HelpMessage;
+            }
+            else
+            {
+                displayFormat = null;
+                return null;
+            }
         }
 
         /// <summary>
@@ -130,10 +160,10 @@ namespace ConfigHandler
             foreach (var property in GetType().GetProperties())
             {
                 Console.WriteLine($"--{property.Name,-20}  ({GetPropertyType(property)})");
-                var helpMessage = GetOptionHelp(property);
+                var helpMessage = GetOptionHelp(property, out string displayFormat);
                 if (!string.IsNullOrEmpty(helpMessage))
                     Console.WriteLine($"\tHelp: {helpMessage,-30}");
-                Console.WriteLine($"\tCurent value: {GetPropertyValue(property),-25}");
+                Console.WriteLine($"\tCurent value: {GetPropertyValue(property, displayFormat),-25}");
                 var enumValues = GetEnumValues(property);
                 if (!string.IsNullOrEmpty(enumValues))
                     Console.WriteLine($"\tPossible values: {enumValues}");
@@ -152,8 +182,8 @@ namespace ConfigHandler
                     if (targetType.GetGenericArguments().Length == 1)
                     {
                         var itemType = targetType.GetGenericArguments()[0];
-                        var addMethod = targetType.GetMethod("Add");
-                        if (addMethod != null && addMethod.GetParameters().Length == 1)
+                        var addMethod = targetType.GetMethod("Add", new Type[] { itemType });
+                        if (addMethod != null)
                         {
                             var newList = Activator.CreateInstance(targetType);
                             var tokens = propertyValue.Split(",");
@@ -165,7 +195,7 @@ namespace ConfigHandler
                         }
                         else
                         {
-                            Logger.Warn($"addMethod not ok: '{addMethod}'");
+                            Logger.Warn($"method Add on type '{itemType}' not found");
                         }
                     }
                     else

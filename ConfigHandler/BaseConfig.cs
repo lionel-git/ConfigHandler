@@ -1,5 +1,4 @@
 ﻿using log4net;
-using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -8,9 +7,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace ConfigHandler
 {
@@ -29,10 +25,10 @@ namespace ConfigHandler
         [OptionAttribute("The config file to use for startup")]
         public string ConfigFile { get; set; }
 
-        private static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings() 
-            { 
-                MissingMemberHandling = MissingMemberHandling.Error 
-            };
+        private static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings()
+        {
+            MissingMemberHandling = MissingMemberHandling.Error
+        };
 
         /// <summary>
         /// If set, display help
@@ -138,7 +134,7 @@ namespace ConfigHandler
             var itemType = property.PropertyType.IsGenericType ? property.PropertyType.GetGenericArguments()[0] : property.PropertyType;
             if (itemType.IsEnum)
                 return Helpers.GetEnumerableAsString(Enum.GetValues(itemType));
-            else 
+            else
                 return null;
         }
 
@@ -248,7 +244,7 @@ namespace ConfigHandler
             {
                 var tokens = arg.Split('=');
                 if (tokens[0].StartsWith("--") && tokens[0].Substring(2, tokens[0].Length - 2) == nameof(ConfigFile))
-                        return tokens[1];
+                    return tokens[1];
             }
             return defaultConfigfile;
         }

@@ -232,7 +232,7 @@ namespace ConfigHandler
         /// <param name="args"></param>
         /// <param name="defaultConfigfile"></param>
         /// <returns></returns>
-        public string GetConfigFileFromCmdLine(string[] args, string defaultConfigfile)
+        public static string GetConfigFileFromCmdLine(string[] args, string defaultConfigfile)
         {
             foreach (var arg in args)
             {

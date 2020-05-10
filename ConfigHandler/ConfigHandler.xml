@@ -49,11 +49,13 @@
             Display help
             </summary>
         </member>
-        <member name="M:ConfigHandler.BaseConfig.CheckCmdConfigFile(System.String[])">
+        <member name="M:ConfigHandler.BaseConfig.GetConfigFileFromCmdLine(System.String[],System.String)">
             <summary>
-            Return name of config file to load
+            Return name of config file to load from cmd line.
+            If not found return argument defaultConfigFile
             </summary>
             <param name="args"></param>
+            <param name="defaultConfigfile"></param>
             <returns></returns>
         </member>
         <member name="M:ConfigHandler.BaseConfig.UpdateFromCmdLine(System.String[])">

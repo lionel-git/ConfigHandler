@@ -54,9 +54,11 @@ namespace ConfigHandler
         /// <typeparam name="T">Type of config to create</typeparam>
         /// <param name="path">Path to file</param>
         /// <returns></returns>
-        public static T Load<T>(string path)
+        public static T Load<T>(string path) where T : BaseConfig
         {
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(path), DefaultJsonSerializerSettings);
+            var config = JsonConvert.DeserializeObject<T>(File.ReadAllText(path), DefaultJsonSerializerSettings);
+            config.ConfigFile = path;
+            return config;
         }
 
         /// <summary>
@@ -225,7 +227,7 @@ namespace ConfigHandler
             }
             else
             {
-                throw new Exception($"Cannot find property: '{propertyName}'");
+                throw new Exception($"Invalid config parameter: '{propertyName}'. Use --Help to display available parameters");
             }
             if (propertyName == nameof(Help))
             {
@@ -234,11 +236,13 @@ namespace ConfigHandler
         }
 
         /// <summary>
-        /// Return name of config file to load
+        /// Return name of config file to load from cmd line.
+        /// If not found return argument defaultConfigFile
         /// </summary>
         /// <param name="args"></param>
+        /// <param name="defaultConfigfile"></param>
         /// <returns></returns>
-        public string CheckCmdConfigFile(string[] args)
+        public string GetConfigFileFromCmdLine(string[] args, string defaultConfigfile)
         {
             foreach (var arg in args)
             {
@@ -246,7 +250,7 @@ namespace ConfigHandler
                 if (tokens[0].StartsWith("--") && tokens[0].Substring(2, tokens[0].Length - 2) == nameof(ConfigFile))
                         return tokens[1];
             }
-            return ConfigFile;
+            return defaultConfigfile;
         }
 
         /// <summary>

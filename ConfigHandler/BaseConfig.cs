@@ -25,11 +25,6 @@ namespace ConfigHandler
         [OptionAttribute("The config file to use for startup")]
         public string ConfigFile { get; set; }
 
-        private static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings()
-        {
-            MissingMemberHandling = MissingMemberHandling.Error
-        };
-
         /// <summary>
         /// If set, display help
         /// </summary>
@@ -52,7 +47,7 @@ namespace ConfigHandler
         /// <returns></returns>
         public static T Load<T>(string path) where T : BaseConfig
         {
-            var config = JsonConvert.DeserializeObject<T>(File.ReadAllText(path), DefaultJsonSerializerSettings);
+            var config = JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
             config.ConfigFile = path;
             return config;
         }
@@ -180,35 +175,38 @@ namespace ConfigHandler
             if (property != null)
             {
                 var targetType = property.PropertyType;
-                if (targetType.IsGenericType)
+                if (!string.IsNullOrEmpty(propertyValue))
                 {
-                    if (targetType.GetGenericArguments().Length == 1)
+                    if (targetType.IsGenericType)
                     {
-                        var itemType = targetType.GetGenericArguments()[0];
-                        var addMethod = targetType.GetMethod("Add", new Type[] { itemType });
-                        if (addMethod != null)
+                        if (targetType.GetGenericArguments().Length == 1)
                         {
-                            var newList = Activator.CreateInstance(targetType);
-                            var tokens = propertyValue.Split(",");
-                            foreach (var token in tokens)
+                            var itemType = targetType.GetGenericArguments()[0];
+                            var addMethod = targetType.GetMethod("Add", new Type[] { itemType });
+                            if (addMethod != null)
                             {
-                                addMethod.Invoke(newList, new object[] { TypeDescriptor.GetConverter(itemType).ConvertFrom(token) });
+                                var newList = Activator.CreateInstance(targetType);
+                                var tokens = propertyValue.Split(",");
+                                foreach (var token in tokens)
+                                {
+                                    addMethod.Invoke(newList, new object[] { TypeDescriptor.GetConverter(itemType).ConvertFrom(token) });
+                                }
+                                property.SetValue(this, newList);
                             }
-                            property.SetValue(this, newList);
+                            else
+                            {
+                                Logger.Warn($"method Add on type '{itemType}' not found");
+                            }
                         }
                         else
                         {
-                            Logger.Warn($"method Add on type '{itemType}' not found");
+                            Logger.Warn($"Generic type '{targetType.FullName}' not handled!");
                         }
                     }
                     else
                     {
-                        Logger.Warn($"Generic type '{targetType.FullName}' not handled!");
+                        property.SetValue(this, TypeDescriptor.GetConverter(targetType).ConvertFrom(propertyValue));
                     }
-                }
-                else if (propertyValue != null)
-                {
-                    property.SetValue(this, TypeDescriptor.GetConverter(targetType).ConvertFrom(propertyValue));
                 }
                 else
                 {

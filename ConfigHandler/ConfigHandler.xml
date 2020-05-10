@@ -58,11 +58,14 @@
             <param name="defaultConfigfile"></param>
             <returns></returns>
         </member>
-        <member name="M:ConfigHandler.BaseConfig.UpdateFromCmdLine(System.String[])">
+        <member name="M:ConfigHandler.BaseConfig.UpdateFromCmdLine(System.String[],System.Boolean)">
             <summary>
             Override the current config from cmdline parameters
+            Returns false if Help is requested
             </summary>
             <param name="args"></param>
+            <param name="showHelp"></param>
+            <returns></returns>
         </member>
         <member name="T:ConfigHandler.Helpers">
             <summary>

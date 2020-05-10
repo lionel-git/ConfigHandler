@@ -225,10 +225,6 @@ namespace ConfigHandler
             {
                 throw new Exception($"Invalid config parameter: '{propertyName}'. Use --Help to display available parameters");
             }
-            if (propertyName == nameof(Help))
-            {
-                ShowHelp();
-            }
         }
 
         /// <summary>
@@ -251,9 +247,12 @@ namespace ConfigHandler
 
         /// <summary>
         /// Override the current config from cmdline parameters
+        /// Returns false if Help is requested
         /// </summary>
         /// <param name="args"></param>
-        public void UpdateFromCmdLine(string[] args)
+        /// <param name="showHelp"></param>
+        /// <returns></returns>
+        public bool UpdateFromCmdLine(string[] args, bool showHelp = true)
         {
             foreach (var arg in args)
             {
@@ -264,6 +263,9 @@ namespace ConfigHandler
                     UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), value);
                 }
             }
-        }
+            if (Help && showHelp)
+                ShowHelp();
+            return !Help;
+        }        
     }
 }

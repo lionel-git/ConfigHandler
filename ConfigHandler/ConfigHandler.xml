@@ -14,10 +14,23 @@
             Path to the config file
             </summary>
         </member>
+        <member name="P:ConfigHandler.BaseConfig.GenericConfigFile">
+            <summary>
+            Optional generic config file
+            If set, first load generic config and then populate from this config file
+            Else load from ConfigFile
+            </summary>
+        </member>
         <member name="P:ConfigHandler.BaseConfig.Help">
             <summary>
             If set, display help
             </summary>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.SetDefaultJsonConfig(Newtonsoft.Json.JsonSerializerSettings)">
+            <summary>
+            Option to redefine serialisation settings
+            </summary>
+            <param name="settings"></param>
         </member>
         <member name="M:ConfigHandler.BaseConfig.#ctor">
             <summary>
@@ -66,6 +79,12 @@
             <param name="args"></param>
             <param name="showHelp"></param>
             <returns></returns>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.UpdateFromSpecificConfig(System.String)">
+            <summary>
+            Update current config from a specific one
+            </summary>
+            <param name="updateConfigPath"></param>
         </member>
         <member name="T:ConfigHandler.Helpers">
             <summary>

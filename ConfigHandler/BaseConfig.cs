@@ -26,10 +26,46 @@ namespace ConfigHandler
         public string ConfigFile { get; set; }
 
         /// <summary>
+        /// Optional generic config file
+        /// If set, first load generic config and then populate from this config file
+        /// Else load from ConfigFile
+        /// </summary>
+        [OptionAttribute("Optional generic config file")]
+        public string GenericConfigFile { get; set; }
+
+        /// <summary>
         /// If set, display help
         /// </summary>
         [OptionAttribute("Display help")]
         public bool Help { get; set; }
+
+        private static bool _customJsonSerializerSettings = false;
+
+        /// <summary>
+        /// Option to redefine serialisation settings
+        /// </summary>
+        /// <param name="settings"></param>
+        public static void SetDefaultJsonConfig(JsonSerializerSettings settings)
+        {
+            // This seems local to the assembly
+            JsonConvert.DefaultSettings = () => settings;
+            _customJsonSerializerSettings = true;
+        }
+
+        // Rem: place [System.ComponentModel.DefaultValueAttribute(true)] to force default value (enum)
+        private static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings()
+        {
+            MissingMemberHandling = MissingMemberHandling.Error,
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore
+        };
+
+        static BaseConfig()
+        {
+            // Set default settings only if user has not defined them
+            if (!_customJsonSerializerSettings)
+                SetDefaultJsonConfig(DefaultJsonSerializerSettings);
+        }
 
         /// <summary>
         /// Instanciate an empty BaseConfig
@@ -264,6 +300,20 @@ namespace ConfigHandler
             if (Help && showHelp)
                 ShowHelp();
             return !Help;
-        }        
+        }
+
+        /// <summary>
+        /// Update current config from a specific one
+        /// </summary>
+        /// <param name="updateConfigPath"></param>
+        public void UpdateFromSpecificConfig(string updateConfigPath)
+        {
+            var json = File.ReadAllText(updateConfigPath);
+            JsonConvert.PopulateObject(json, this,
+                new JsonSerializerSettings()
+                {
+                    ObjectCreationHandling = ObjectCreationHandling.Replace
+                });
+        }
     }
 }

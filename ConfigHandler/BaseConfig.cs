@@ -296,6 +296,13 @@ namespace ConfigHandler
                     var value = tokens.Length >= 2 ? tokens[1] : null;
                     UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), value);
                 }
+                else
+                {
+                    var msg = $"Invalid parameter: '{arg}'";
+                    Logger.Error(msg);
+                    ShowHelp();
+                    throw new Exception(msg);
+                }
             }
             if (Help && showHelp)
                 ShowHelp();

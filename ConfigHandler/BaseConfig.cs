@@ -72,7 +72,6 @@ namespace ConfigHandler
         /// </summary>
         public BaseConfig()
         {
-            ConfigFile = "baseConfig.json";
         }
 
         /// <summary>
@@ -268,15 +267,14 @@ namespace ConfigHandler
         /// <param name="args"></param>
         /// <param name="defaultConfigfile"></param>
         /// <returns></returns>
-        public static string GetConfigFileFromCmdLine(string[] args, string defaultConfigfile)
+        public static string GetConfigFileFromCmdLine<T>(string[] args, string defaultConfigfile) where T : BaseConfig, new()
         {
-            foreach (var arg in args)
-            {
-                var tokens = arg.Split('=');
-                if (tokens[0].StartsWith("--") && tokens[0].Substring(2, tokens[0].Length - 2) == nameof(ConfigFile))
-                    return tokens[1];
-            }
-            return defaultConfigfile;
+            var config = new T();
+            config.UpdateFromCmdLine(args);
+            if (!string.IsNullOrEmpty(config.ConfigFile))
+                return config.ConfigFile;
+            else
+                return defaultConfigfile;
         }
 
         /// <summary>

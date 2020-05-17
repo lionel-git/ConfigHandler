@@ -20,11 +20,14 @@ namespace ConfigHandler
         {
             var sb = new StringBuilder();
             int count = 0;
-            foreach (var item in list)
+            if (list != null)
             {
-                if (++count > 1)
-                    sb.Append(separator);
-                sb.Append(item);
+                foreach (var item in list)
+                {
+                    if (++count > 1)
+                        sb.Append(separator);
+                    sb.Append(item);
+                }
             }
             for (int i = 0; i < countTrailer; i++)
                 sb.Append(trailer);

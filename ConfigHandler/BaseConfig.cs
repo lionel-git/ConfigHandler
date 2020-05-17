@@ -105,7 +105,7 @@ namespace ConfigHandler
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
-        private string GetValueFormatted(object value, string displayFormat, string propertyName)
+        private static string GetValueFormatted(object value, string displayFormat, string propertyName)
         {
             if (string.IsNullOrEmpty(displayFormat) || value == null)
                 return value?.ToString();
@@ -136,13 +136,13 @@ namespace ConfigHandler
         }
 
         // System.String => String
-        private string GetLastType(Type type)
+        private static string GetLastType(Type type)
         {
             var tokens = type.ToString().Split('.');
             return tokens[tokens.Length - 1];
         }
 
-        private string GetGenericTypes(Type[] types)
+        private static string GetGenericTypes(Type[] types)
         {
             var list = new List<string>();
             foreach (var type in types)
@@ -154,12 +154,12 @@ namespace ConfigHandler
         }
 
         // System.Collections.Generic.List`1[System.String] => List<String>
-        private string GetPropertyType(PropertyInfo property)
+        private static string GetPropertyType(PropertyInfo property)
         {
             return $"{property.PropertyType.Name}{GetGenericTypes(property.PropertyType.GetGenericArguments())}";
         }
 
-        private string GetEnumValues(PropertyInfo property)
+        private static string GetEnumValues(PropertyInfo property)
         {
             var itemType = property.PropertyType.IsGenericType ? property.PropertyType.GetGenericArguments()[0] : property.PropertyType;
             if (itemType.IsEnum)
@@ -168,7 +168,7 @@ namespace ConfigHandler
                 return null;
         }
 
-        private string GetOptionHelp(PropertyInfo property, out string displayFormat)
+        private static string GetOptionHelp(PropertyInfo property, out string displayFormat)
         {
             var optionAttributes = property.GetCustomAttributes(typeof(OptionAttribute), false) as OptionAttribute[];
             if (optionAttributes.Length >= 1)
@@ -286,20 +286,23 @@ namespace ConfigHandler
         /// <returns></returns>
         public bool UpdateFromCmdLine(string[] args, bool showHelp = true)
         {
-            foreach (var arg in args)
+            if (args != null)
             {
-                var tokens = arg.Split('=');
-                if (tokens[0].StartsWith("--"))
+                foreach (var arg in args)
                 {
-                    var value = tokens.Length >= 2 ? tokens[1] : null;
-                    UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), value);
-                }
-                else
-                {
-                    var msg = $"Invalid parameter: '{arg}'";
-                    Logger.Error(msg);
-                    ShowHelp();
-                    throw new Exception(msg);
+                    var tokens = arg.Split('=');
+                    if (tokens[0].StartsWith("--", StringComparison.Ordinal))
+                    {
+                        var value = tokens.Length >= 2 ? tokens[1] : null;
+                        UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), value);
+                    }
+                    else
+                    {
+                        var msg = $"Invalid parameter: '{arg}'";
+                        Logger.Error(msg);
+                        ShowHelp();
+                        throw new Exception(msg);
+                    }
                 }
             }
             if (Help && showHelp)

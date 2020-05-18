@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>1.0.4</Version>
     <Description>Handle config file, option to override some parameters from command line</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>ConfigHandler.xml</DocumentationFile>

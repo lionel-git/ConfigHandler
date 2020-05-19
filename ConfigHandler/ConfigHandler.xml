@@ -26,6 +26,11 @@
             If set, display help
             </summary>
         </member>
+        <member name="P:ConfigHandler.BaseConfig.Version">
+            <summary>
+            If set, display versions informations
+            </summary>
+        </member>
         <member name="M:ConfigHandler.BaseConfig.SetDefaultJsonConfig(Newtonsoft.Json.JsonSerializerSettings)">
             <summary>
             Option to redefine serialisation settings
@@ -57,10 +62,17 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ConfigHandler.BaseConfig.ShowHelp">
+        <member name="M:ConfigHandler.BaseConfig.ShowHelp(System.Boolean)">
             <summary>
-            Display help
+            Display help on console, with an optional exit
             </summary>
+            <param name="exitProgram"></param>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.ShowVersion(System.Boolean)">
+            <summary>
+            Display version infos
+            </summary>
+            <param name="exitProgram"></param>
         </member>
         <member name="M:ConfigHandler.BaseConfig.GetConfigFileFromCmdLine``1(System.String[],System.String)">
             <summary>

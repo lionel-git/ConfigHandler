@@ -39,6 +39,12 @@ namespace ConfigHandler
         [OptionAttribute("Display help")]
         public bool Help { get; set; }
 
+        /// <summary>
+        /// If set, display versions informations
+        /// </summary>
+        [OptionAttribute("Display versions information")]
+        public bool Version { get; set; }
+
         private static bool _customJsonSerializerSettings = false;
 
         /// <summary>
@@ -183,12 +189,19 @@ namespace ConfigHandler
             }
         }
 
-        /// <summary>
-        /// Display help
-        /// </summary>
-        public void ShowHelp()
+        private void CheckExit(bool exitProgram)
         {
-            Console.WriteLine($"Syntax: {Assembly.GetExecutingAssembly().GetName().Name} --option1=... --option2=...");
+            if (exitProgram)
+                Environment.Exit(0);
+        }
+
+        /// <summary>
+        /// Display help on console, with an optional exit
+        /// </summary>
+        /// <param name="exitProgram"></param>
+        public virtual void ShowHelp(bool exitProgram)
+        {
+            Console.WriteLine($"Syntax: {Assembly.GetEntryAssembly().GetName().Name} --option1=... --option2=...");
             Console.WriteLine($"Lists are comma separated");
             foreach (var property in GetType().GetProperties())
             {
@@ -202,6 +215,19 @@ namespace ConfigHandler
                     Console.WriteLine($"\tPossible values: {enumValues}");
                 Console.WriteLine();
             }
+            CheckExit(exitProgram);
+        }
+
+        /// <summary>
+        /// Display version infos
+        /// </summary>
+        /// <param name="exitProgram"></param>
+        public virtual void ShowVersion(bool exitProgram)
+        {
+            Console.WriteLine("Assembly Versions:");
+            Console.WriteLine($"Entry    : {Assembly.GetEntryAssembly().GetName()}");
+            Console.WriteLine($"Executing: {Assembly.GetExecutingAssembly().GetName()}");
+            CheckExit(exitProgram);
         }
 
         private void UpdateProperty(string propertyName, string propertyValue)
@@ -300,13 +326,15 @@ namespace ConfigHandler
                     {
                         var msg = $"Invalid parameter: '{arg}'";
                         Logger.Error(msg);
-                        ShowHelp();
+                        ShowHelp(false);
                         throw new Exception(msg);
                     }
                 }
             }
+            if (Version)
+                ShowVersion(true);
             if (Help && showHelp)
-                ShowHelp();
+                ShowHelp(true);
             return !Help;
         }
 

@@ -6,6 +6,12 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>ConfigHandler.xml</DocumentationFile>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <PackageTags>Options Configuration</PackageTags>
+    <Authors>LD</Authors>
+    <Company>LD Inc</Company>
+    <RepositoryType>Git</RepositoryType>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    
   </PropertyGroup>
 
   <ItemGroup>

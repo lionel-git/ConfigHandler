@@ -1,6 +1,7 @@
 <Project>
  <PropertyGroup>
-	<FileVersion>1.0.5.0</FileVersion>
-	<Version>1.0.5-{GIT}</Version>	
+	<FileVersion>1.0.6.0</FileVersion>
+  <AssemblyVersion>1.0.6.0</AssemblyVersion>
+	<Version>1.0.6+{GIT}</Version>	
  </PropertyGroup>
 </Project>

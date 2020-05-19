@@ -294,7 +294,7 @@ namespace ConfigHandler
                     if (tokens[0].StartsWith("--", StringComparison.Ordinal))
                     {
                         var value = tokens.Length >= 2 ? tokens[1] : null;
-                        UpdateProperty(tokens[0].Substring(2, tokens[0].Length - 2), value);
+                        UpdateProperty(tokens[0].Substring(2), value);
                     }
                     else
                     {

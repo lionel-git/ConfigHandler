@@ -1,0 +1,6 @@
+<Project>
+ <PropertyGroup>
+	<FileVersion>1.0.5.0</FileVersion>
+	<Version>1.0.5-{GIT}</Version>	
+ </PropertyGroup>
+</Project>

@@ -139,7 +139,7 @@ namespace ConfigHandler
         private static string GetLastType(Type type)
         {
             var tokens = type.ToString().Split('.');
-            return tokens[tokens.Length - 1];
+            return tokens[^1];
         }
 
         private static string GetGenericTypes(Type[] types)

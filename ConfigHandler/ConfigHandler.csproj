@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>Handle config file, option to override some parameters from command line</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    
     <DocumentationFile>ConfigHandler.xml</DocumentationFile>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <PackageTags>Options Configuration</PackageTags>
@@ -14,6 +14,10 @@
     <NoWarn>NU5105</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild> 
+  </PropertyGroup>
+  
   <ItemGroup>
     <None Remove="ConfigHandler.xml" />
     <None Remove="Directory.Build.props" />

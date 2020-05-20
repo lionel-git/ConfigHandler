@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Description>Handle config file, option to override some parameters from command line</Description>
-    
+    <Description>Handle config file, option to override some parameters from command line</Description> 
     <DocumentationFile>ConfigHandler.xml</DocumentationFile>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <PackageTags>Options Configuration</PackageTags>
@@ -12,6 +11,8 @@
     <RepositoryType>Git</RepositoryType>
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>NU5105</NoWarn>
+    <PackageReleaseNotes>Some updates</PackageReleaseNotes>
+    <PackageIcon>16038.ico</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -21,6 +22,10 @@
   <ItemGroup>
     <None Remove="ConfigHandler.xml" />
     <None Remove="Directory.Build.props" />
+    <None Include="16038.ico">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

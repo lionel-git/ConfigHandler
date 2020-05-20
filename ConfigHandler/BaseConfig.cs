@@ -189,7 +189,7 @@ namespace ConfigHandler
             }
         }
 
-        private void CheckExit(bool exitProgram)
+        private static void CheckExit(bool exitProgram)
         {
             if (exitProgram)
                 Environment.Exit(0);

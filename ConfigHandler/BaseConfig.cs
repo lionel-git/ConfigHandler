@@ -218,6 +218,11 @@ namespace ConfigHandler
             CheckExit(exitProgram);
         }
 
+        private static string GetShortName(Assembly assembly)
+        {
+            return $"{assembly.GetName().Name}, {assembly.GetName().Version}";
+        }
+
         /// <summary>
         /// Display version infos
         /// </summary>
@@ -225,8 +230,15 @@ namespace ConfigHandler
         public virtual void ShowVersion(bool exitProgram)
         {
             Console.WriteLine("Assembly Versions:");
-            Console.WriteLine($"Entry    : {Assembly.GetEntryAssembly().GetName()}");
-            Console.WriteLine($"Executing: {Assembly.GetExecutingAssembly().GetName()}");
+            Console.WriteLine($"Entry    : {GetShortName(Assembly.GetEntryAssembly())}");
+            Console.WriteLine($"Executing: {GetShortName(Assembly.GetExecutingAssembly())}");
+            Console.WriteLine("=====");
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var fullName = assembly.FullName;
+                if (!fullName.StartsWith("System.", StringComparison.Ordinal))
+                    Console.WriteLine($"{GetShortName(assembly)} ({assembly.Location})");
+            }
             CheckExit(exitProgram);
         }
 

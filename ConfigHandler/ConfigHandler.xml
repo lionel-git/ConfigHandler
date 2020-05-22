@@ -83,13 +83,14 @@
             <param name="defaultConfigfile"></param>
             <returns></returns>
         </member>
-        <member name="M:ConfigHandler.BaseConfig.UpdateFromCmdLine(System.String[],System.Boolean)">
+        <member name="M:ConfigHandler.BaseConfig.UpdateFromCmdLine(System.String[],System.Boolean,System.Boolean)">
             <summary>
             Override the current config from cmdline parameters
-            Returns false if Help is requested
+            Output help/version to console if flags set
             </summary>
             <param name="args"></param>
             <param name="showHelp"></param>
+            <param name="showVersion"></param>
             <returns></returns>
         </member>
         <member name="M:ConfigHandler.BaseConfig.UpdateFromSpecificConfig(System.String)">
@@ -97,6 +98,17 @@
             Update current config from a specific one
             </summary>
             <param name="updateConfigPath"></param>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.LoadAll``1(System.String[],System.String,System.Boolean,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="args"></param>
+            <param name="DefaultConfigFile"></param>
+            <param name="showHelp"></param>
+            <param name="showVersion"></param>
+            <returns></returns>
         </member>
         <member name="T:ConfigHandler.Helpers">
             <summary>

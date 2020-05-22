@@ -237,7 +237,10 @@ namespace ConfigHandler
             {
                 var fullName = assembly.FullName;
                 if (!fullName.StartsWith("System.", StringComparison.Ordinal))
-                    Console.WriteLine($"{GetShortName(assembly)} ({assembly.Location})");
+                {
+                    var location = assembly.IsDynamic ? "Dynamic" : assembly.Location;
+                    Console.WriteLine($"{GetShortName(assembly)} ({location})");
+                }
             }
             CheckExit(exitProgram);
         }
@@ -305,10 +308,10 @@ namespace ConfigHandler
         /// <param name="args"></param>
         /// <param name="defaultConfigfile"></param>
         /// <returns></returns>
-        public static string GetConfigFileFromCmdLine<T>(string[] args, string defaultConfigfile) where T : BaseConfig, new()
+        private static string GetConfigFileFromCmdLine<T>(string[] args, string defaultConfigfile) where T : BaseConfig, new()
         {
             var config = new T();
-            config.UpdateFromCmdLine(args);
+            config.UpdateFromCmdLine(args, false, false);
             if (!string.IsNullOrEmpty(config.ConfigFile))
                 return config.ConfigFile;
             else
@@ -317,12 +320,13 @@ namespace ConfigHandler
 
         /// <summary>
         /// Override the current config from cmdline parameters
-        /// Returns false if Help is requested
+        /// Output help/version to console if flags set
         /// </summary>
         /// <param name="args"></param>
         /// <param name="showHelp"></param>
+        /// <param name="showVersion"></param>
         /// <returns></returns>
-        public bool UpdateFromCmdLine(string[] args, bool showHelp = true)
+        private void UpdateFromCmdLine(string[] args, bool showHelp, bool showVersion)
         {
             if (args != null)
             {
@@ -343,18 +347,17 @@ namespace ConfigHandler
                     }
                 }
             }
-            if (Version)
-                ShowVersion(true);
+            if (Version && showVersion)
+                ShowVersion(false);
             if (Help && showHelp)
-                ShowHelp(true);
-            return !Help;
+                ShowHelp(false);
         }
 
         /// <summary>
         /// Update current config from a specific one
         /// </summary>
         /// <param name="updateConfigPath"></param>
-        public void UpdateFromSpecificConfig(string updateConfigPath)
+        private void UpdateFromSpecificConfig(string updateConfigPath)
         {
             var json = File.ReadAllText(updateConfigPath);
             JsonConvert.PopulateObject(json, this,
@@ -362,6 +365,34 @@ namespace ConfigHandler
                 {
                     ObjectCreationHandling = ObjectCreationHandling.Replace
                 });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="args"></param>
+        /// <param name="DefaultConfigFile"></param>
+        /// <param name="showHelp"></param>
+        /// <param name="showVersion"></param>
+        /// <returns></returns>
+        public static T LoadAll<T>(string[] args, string DefaultConfigFile, bool showHelp = true, bool showVersion = true) where T : BaseConfig, new()
+        {
+            var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile);
+            Logger.Info($"Loading config file: '{configFile}'");
+            var stack = new Stack<string>();
+            while (!string.IsNullOrEmpty(configFile))
+            {
+                stack.Push(configFile);
+                configFile = Load<T>(configFile).GenericConfigFile;
+                if (stack.Count > 10)
+                    throw new Exception($"Recursion level exceeded: {stack.Count} => {string.Join(',', stack.ToList())}");
+            }
+            var config = Load<T>(stack.Pop()); // throw if 0 elts, should not happen
+            while (stack.Count > 0)
+                config.UpdateFromSpecificConfig(stack.Pop());
+            config.UpdateFromCmdLine(args, showHelp, showVersion);
+            return config;
         }
     }
 }

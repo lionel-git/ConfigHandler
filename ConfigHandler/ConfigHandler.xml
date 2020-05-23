@@ -14,11 +14,11 @@
             Path to the config file
             </summary>
         </member>
-        <member name="P:ConfigHandler.BaseConfig.GenericConfigFile">
+        <member name="P:ConfigHandler.BaseConfig.ParentConfigFile">
             <summary>
-            Optional generic config file
-            If set, first load generic config and then populate from this config file
-            Else load from ConfigFile
+            Optional parent config file
+            If set, first load parent config and then populate from this config file
+            This can be recursive up to 10 levels
             </summary>
         </member>
         <member name="P:ConfigHandler.BaseConfig.Help">

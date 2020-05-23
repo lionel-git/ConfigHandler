@@ -23,12 +23,12 @@ namespace ConfigHandler
         public string ConfigFile { get; set; }
 
         /// <summary>
-        /// Optional generic config file
-        /// If set, first load generic config and then populate from this config file
-        /// Else load from ConfigFile
+        /// Optional parent config file
+        /// If set, first load parent config and then populate from this config file
+        /// This can be recursive up to 10 levels
         /// </summary>
-        [OptionAttribute("Optional generic config file")]
-        public string GenericConfigFile { get; set; }
+        [OptionAttribute("Optional parent config file")]
+        public string ParentConfigFile { get; set; }
 
         /// <summary>
         /// If set, display help
@@ -392,7 +392,7 @@ namespace ConfigHandler
             while (!string.IsNullOrEmpty(configFile))
             {
                 stack.Push(configFile);
-                configFile = Load<T>(configFile).GenericConfigFile;
+                configFile = Load<T>(configFile).ParentConfigFile;
                 if (stack.Count > 10)
                     throw new Exception($"Recursion level exceeded: {stack.Count} => {string.Join(',', stack.ToList())}");
             }

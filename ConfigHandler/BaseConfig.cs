@@ -1,5 +1,4 @@
-﻿using log4net;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,8 +14,6 @@ namespace ConfigHandler
     /// </summary>
     public class BaseConfig
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(BaseConfig));
-
         private const String EmptyValue = "\"\"";
 
         /// <summary>
@@ -46,6 +43,8 @@ namespace ConfigHandler
         public bool Version { get; set; }
 
         private static bool _customJsonSerializerSettings = false;
+
+        private static ILogger _logger;
 
         /// <summary>
         /// Option to redefine serialisation settings
@@ -78,6 +77,15 @@ namespace ConfigHandler
         /// </summary>
         public BaseConfig()
         {
+        }
+
+        /// <summary>
+        /// Set Logger
+        /// </summary>
+        /// <param name="logger"></param>
+        public static void SetLogger(ILogger logger)
+        {
+            _logger = logger;
         }
 
         /// <summary>
@@ -124,7 +132,7 @@ namespace ConfigHandler
                     return toStringMethod.Invoke(value, new object[] { displayFormat }).ToString();
                 else
                 {
-                    Logger.Warn($"Formatting not supported for type '{value.GetType()}' (propertyName='{propertyName}')");
+                    _logger?.WarnMsg($"Formatting not supported for type '{value.GetType()}' (propertyName='{propertyName}')");
                     return value.ToString();
                 }
             }
@@ -271,12 +279,12 @@ namespace ConfigHandler
                             }
                             else
                             {
-                                Logger.Warn($"method Add on type '{itemType}' not found");
+                                _logger?.WarnMsg($"method Add on type '{itemType}' not found");
                             }
                         }
                         else
                         {
-                            Logger.Warn($"Generic type '{targetType.FullName}' not handled!");
+                            _logger?.WarnMsg($"Generic type '{targetType.FullName}' not handled!");
                         }
                     }
                     else
@@ -341,7 +349,7 @@ namespace ConfigHandler
                     else
                     {
                         var msg = $"Invalid parameter: '{arg}'";
-                        Logger.Error(msg);
+                        _logger?.ErrorMsg(msg);
                         ShowHelp(false);
                         throw new Exception(msg);
                     }
@@ -379,7 +387,7 @@ namespace ConfigHandler
         public static T LoadAll<T>(string[] args, string DefaultConfigFile, bool showHelp = true, bool showVersion = true) where T : BaseConfig, new()
         {
             var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile);
-            Logger.Info($"Loading config file: '{configFile}'");
+            _logger?.InfoMsg($"Loading config file: '{configFile}'");
             var stack = new Stack<string>();
             while (!string.IsNullOrEmpty(configFile))
             {

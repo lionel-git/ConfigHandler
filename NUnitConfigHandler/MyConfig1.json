@@ -1,0 +1,11 @@
+﻿{
+  "MyColor": "Red",
+  "MyColors": [
+    "Red",
+    "Blue"
+  ],
+  "ColorMeaning": {
+    "Red": "Angry",
+    "Green": "Happy"
+  }
+}

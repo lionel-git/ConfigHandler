@@ -89,13 +89,7 @@ namespace ConfigHandler
             _logger = logger;
         }
 
-        /// <summary>
-        /// Load a config from a file
-        /// </summary>
-        /// <typeparam name="T">Type of config to create</typeparam>
-        /// <param name="path">Path to file</param>
-        /// <returns></returns>
-        public static T Load<T>(string path) where T : BaseConfig
+        private static T Load<T>(string path) where T : BaseConfig
         {
             var config = JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
             config.ConfigFile = path;
@@ -380,7 +374,7 @@ namespace ConfigHandler
         /// <param name="DefaultConfigFile"></param>
         /// <param name="showHelpVersion"></param>
         /// <returns></returns>
-        public static T LoadAll<T>(string[] args, string DefaultConfigFile, bool showHelpVersion = true) where T : BaseConfig, new()
+        public static T LoadAll<T>(string DefaultConfigFile, string[] args = null, bool showHelpVersion = true) where T : BaseConfig, new()
         {
             var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile, showHelpVersion);
             T config;

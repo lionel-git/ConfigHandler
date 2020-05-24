@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
+using System.Runtime.Versioning;
 
 namespace ConfigHandler
 {
@@ -231,6 +232,17 @@ namespace ConfigHandler
             return $"{assembly.GetName().Name}, {assembly.GetName().Version}";
         }
 
+        private static void ShowCustomAttributes<T>(Assembly assembly, string propertyName) where T : class 
+        {
+            var attributes = assembly.GetCustomAttributes(typeof(T));
+            foreach (var attribute in attributes)
+            {
+                var customAttribute = attribute as T;
+                var property = customAttribute.GetType().GetProperty(propertyName);
+                Console.WriteLine($"\t{propertyName} = {property.GetValue(customAttribute)}");
+            }
+        }
+
         /// <summary>
         /// Display version infos
         /// </summary>
@@ -248,6 +260,10 @@ namespace ConfigHandler
                 {
                     var location = assembly.IsDynamic ? "Dynamic" : assembly.Location;
                     Console.WriteLine($"{GetShortName(assembly)} ({location})");
+                    ShowCustomAttributes<TargetFrameworkAttribute>(assembly, "FrameworkName");
+                    ShowCustomAttributes<AssemblyInformationalVersionAttribute>(assembly, "InformationalVersion");
+                    ShowCustomAttributes<AssemblyConfigurationAttribute>(assembly, "Configuration");
+                    Console.WriteLine();
                 }
             }
             CheckExit(exitProgram);

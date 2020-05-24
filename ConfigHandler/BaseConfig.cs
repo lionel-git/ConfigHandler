@@ -153,7 +153,7 @@ namespace ConfigHandler
         private static string GetLastType(Type type)
         {
             var tokens = type.ToString().Split('.');
-            return tokens[^1];
+            return tokens[tokens.Length - 1];
         }
 
         private static string GetGenericTypes(Type[] types)
@@ -270,7 +270,7 @@ namespace ConfigHandler
                             if (addMethod != null)
                             {
                                 var newList = Activator.CreateInstance(targetType);
-                                var tokens = propertyValue.Split(",");
+                                var tokens = propertyValue.Split(',');
                                 foreach (var token in tokens)
                                 {
                                     addMethod.Invoke(newList, new object[] { TypeDescriptor.GetConverter(itemType).ConvertFrom(token) });
@@ -394,7 +394,7 @@ namespace ConfigHandler
                 stack.Push(configFile);
                 configFile = Load<T>(configFile).ParentConfigFile;
                 if (stack.Count > 10)
-                    throw new Exception($"Recursion level exceeded: {stack.Count} => {string.Join(',', stack.ToList())}");
+                    throw new Exception($"Recursion level exceeded: {stack.Count} => {string.Join(",", stack.ToList())}");
             }
             var config = Load<T>(stack.Pop()); // throw if 0 elts, should not happen
             while (stack.Count > 0)

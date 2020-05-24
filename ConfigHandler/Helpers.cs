@@ -19,9 +19,9 @@ namespace ConfigHandler
         public static string GetEnumerableAsString(IEnumerable list, string separator = ",", string trailer = "", int countTrailer = 0)
         {
             var sb = new StringBuilder();
-            int count = 0;
             if (list != null)
             {
+                int count = 0;
                 foreach (var item in list)
                 {
                     if (++count > 1)

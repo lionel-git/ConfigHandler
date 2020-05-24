@@ -259,7 +259,7 @@ namespace ConfigHandler
             if (property != null)
             {
                 var targetType = property.PropertyType;
-                if (!string.IsNullOrEmpty(propertyValue))
+                if (propertyValue != null)
                 {
                     if (targetType.IsGenericType)
                     {
@@ -299,42 +299,17 @@ namespace ConfigHandler
                         property.SetValue(this, true);
                     else
                     {
-                        throw new Exception($"No value passed for '{propertyName}'?");
+                        throw new ConfigHandlerException($"No value passed for '{propertyName}'?");
                     }
                 }
             }
             else
             {
-                throw new Exception($"Invalid config parameter: '{propertyName}'. Use --Help to display available parameters");
+                throw new ConfigHandlerException($"Invalid config parameter: '{propertyName}'. Use --Help to display available parameters");
             }
         }
 
-        /// <summary>
-        /// Return name of config file to load from cmd line.
-        /// If not found return argument defaultConfigFile
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="defaultConfigfile"></param>
-        /// <returns></returns>
-        private static string GetConfigFileFromCmdLine<T>(string[] args, string defaultConfigfile) where T : BaseConfig, new()
-        {
-            var config = new T();
-            config.UpdateFromCmdLine(args, false, false);
-            if (!string.IsNullOrEmpty(config.ConfigFile))
-                return config.ConfigFile;
-            else
-                return defaultConfigfile;
-        }
-
-        /// <summary>
-        /// Override the current config from cmdline parameters
-        /// Output help/version to console if flags set
-        /// </summary>
-        /// <param name="args"></param>
-        /// <param name="showHelp"></param>
-        /// <param name="showVersion"></param>
-        /// <returns></returns>
-        private void UpdateFromCmdLine(string[] args, bool showHelp, bool showVersion)
+        private void UpdateFromCmdLine(string[] args, bool showHelpVersion)
         {
             if (args != null)
             {
@@ -351,20 +326,26 @@ namespace ConfigHandler
                         var msg = $"Invalid parameter: '{arg}'";
                         _logger?.ErrorMsg(msg);
                         ShowHelp(false);
-                        throw new Exception(msg);
+                        throw new ConfigHandlerException(msg);
                     }
                 }
             }
-            if (Version && showVersion)
+            if (Version && showHelpVersion)
                 ShowVersion(false);
-            if (Help && showHelp)
+            if (Help && showHelpVersion)
                 ShowHelp(false);
         }
 
-        /// <summary>
-        /// Update current config from a specific one
-        /// </summary>
-        /// <param name="updateConfigPath"></param>
+        private static string GetConfigFileFromCmdLine<T>(string[] args, string defaultConfigfile, bool showHelpVersion) where T : BaseConfig, new()
+        {
+            var config = new T();
+            config.UpdateFromCmdLine(args, showHelpVersion);
+            if (config.ConfigFile != null)
+                return config.ConfigFile;
+            else
+                return defaultConfigfile;
+        }
+
         private void UpdateFromSpecificConfig(string updateConfigPath)
         {
             var json = File.ReadAllText(updateConfigPath);
@@ -381,25 +362,30 @@ namespace ConfigHandler
         /// <typeparam name="T"></typeparam>
         /// <param name="args"></param>
         /// <param name="DefaultConfigFile"></param>
-        /// <param name="showHelp"></param>
-        /// <param name="showVersion"></param>
+        /// <param name="showHelpVersion"></param>
         /// <returns></returns>
-        public static T LoadAll<T>(string[] args, string DefaultConfigFile, bool showHelp = true, bool showVersion = true) where T : BaseConfig, new()
+        public static T LoadAll<T>(string[] args, string DefaultConfigFile, bool showHelpVersion = true) where T : BaseConfig, new()
         {
-            var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile);
-            _logger?.InfoMsg($"Loading config file: '{configFile}'");
-            var stack = new Stack<string>();
-            while (!string.IsNullOrEmpty(configFile))
+            var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile, showHelpVersion);
+            T config;
+            if (!string.IsNullOrEmpty(configFile))
             {
-                stack.Push(configFile);
-                configFile = Load<T>(configFile).ParentConfigFile;
-                if (stack.Count > 10)
-                    throw new Exception($"Recursion level exceeded: {stack.Count} => {string.Join(",", stack.ToList())}");
+                _logger?.InfoMsg($"Loading config file: '{configFile}'");
+                var stack = new Stack<string>();
+                while (!string.IsNullOrEmpty(configFile))
+                {
+                    stack.Push(configFile);
+                    configFile = Load<T>(configFile).ParentConfigFile;
+                    if (stack.Count > 10)
+                        throw new ConfigHandlerException($"Recursion level exceeded: {stack.Count} => {string.Join(",", stack.ToList())}");
+                }
+                config = Load<T>(stack.Pop()); // throw if 0 elts, should not happen
+                while (stack.Count > 0)
+                    config.UpdateFromSpecificConfig(stack.Pop());
             }
-            var config = Load<T>(stack.Pop()); // throw if 0 elts, should not happen
-            while (stack.Count > 0)
-                config.UpdateFromSpecificConfig(stack.Pop());
-            config.UpdateFromCmdLine(args, showHelp, showVersion);
+            else
+                config = new T();
+            config.UpdateFromCmdLine(args, false);
             return config;
         }
     }

@@ -1,0 +1,3 @@
+[submodule "GenericScripts"]
+	path = GenericScripts
+	url = git@github.com:lionel-git/GenericScripts.git

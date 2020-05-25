@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigHandler", "ConfigHand
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitConfigHandler", "NUnitConfigHandler\NUnitConfigHandler.csproj", "{9DFA6964-36EA-4D62-8E28-20E86C6A70CE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{D5B47503-5EC7-4112-B106-4002698A3DD4}"
+	ProjectSection(SolutionItems) = preProject
+		DeployNuget.ps1 = DeployNuget.ps1
+		PreBuild.ps1 = PreBuild.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

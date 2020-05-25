@@ -10,7 +10,23 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{D5B47503-5EC7-4112-B106-4002698A3DD4}"
 	ProjectSection(SolutionItems) = preProject
 		DeployNuget.ps1 = DeployNuget.ps1
-		PreBuild.ps1 = PreBuild.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GenericScripts", "GenericScripts", "{AFFA957E-1ADD-47D4-A18B-6DB979CC82DB}"
+	ProjectSection(SolutionItems) = preProject
+		GenericScripts\.git = GenericScripts\.git
+		GenericScripts\backup_config.bat = GenericScripts\backup_config.bat
+		GenericScripts\DeployCheckDoublon.ps1 = GenericScripts\DeployCheckDoublon.ps1
+		GenericScripts\DeployNuget.ps1 = GenericScripts\DeployNuget.ps1
+		GenericScripts\PreBuild.ps1 = GenericScripts\PreBuild.ps1
+		GenericScripts\README.md = GenericScripts\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PSModules", "PSModules", "{F97D89EB-8101-47A3-81F7-AA7F8318796D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{0B32FA2F-E0EC-488C-8ACB-4CCE390888B0}"
+	ProjectSection(SolutionItems) = preProject
+		GenericScripts\PsModules\Helpers\Helpers.psm1 = GenericScripts\PsModules\Helpers\Helpers.psm1
 	EndProjectSection
 EndProject
 Global
@@ -30,6 +46,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F97D89EB-8101-47A3-81F7-AA7F8318796D} = {AFFA957E-1ADD-47D4-A18B-6DB979CC82DB}
+		{0B32FA2F-E0EC-488C-8ACB-4CCE390888B0} = {F97D89EB-8101-47A3-81F7-AA7F8318796D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4334B014-24DB-441B-A565-0B588DD54739}

@@ -205,7 +205,7 @@ namespace ConfigHandler
         public virtual void ShowHelp(bool exitProgram)
         {
             Console.WriteLine($"Syntax: {Assembly.GetEntryAssembly().GetName().Name} --option1=... --option2=...");
-            Console.WriteLine($"Lists are comma separated");
+            Console.WriteLine("Lists are comma separated");
             foreach (var property in GetType().GetProperties())
             {
                 Console.WriteLine($"--{property.Name,-20}  ({GetPropertyType(property)})");

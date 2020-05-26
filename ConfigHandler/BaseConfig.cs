@@ -237,6 +237,12 @@ namespace ConfigHandler
             }
         }
 
+        private static bool IsSystemAssembly(string name)
+        {
+            return name.StartsWith("System.", StringComparison.Ordinal) ||
+                   name.StartsWith("Microsoft.", StringComparison.Ordinal);
+        }
+
         /// <summary>
         /// Display version infos
         /// </summary>
@@ -247,11 +253,21 @@ namespace ConfigHandler
             Console.WriteLine($"Entry    : {GetShortName(Assembly.GetEntryAssembly())}");
             Console.WriteLine($"Executing: {GetShortName(Assembly.GetExecutingAssembly())}");
             Console.WriteLine("=====");
+            Console.WriteLine("Loaded assemblies:");
+            var assemblyLoaded = new HashSet<string>();
+            var assemblyReferenced = new HashSet<string>();
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 var fullName = assembly.FullName;
-                if (!fullName.StartsWith("System.", StringComparison.Ordinal))
+                if (!IsSystemAssembly(fullName))
                 {
+                    assemblyLoaded.Add(assembly.FullName);
+                    foreach (var name in assembly.GetReferencedAssemblies())
+                    {
+                        var assemblyName = name.ToString();
+                        if (!IsSystemAssembly(assemblyName))
+                            assemblyReferenced.Add(assemblyName);
+                    }
                     var location = assembly.IsDynamic ? "Dynamic" : assembly.Location;
                     Console.WriteLine($"{GetShortName(assembly)} ({location})");
                     ShowCustomAttributes<TargetFrameworkAttribute>(assembly, "FrameworkName");
@@ -260,6 +276,13 @@ namespace ConfigHandler
                     Console.WriteLine();
                 }
             }
+            // Display referenced
+            foreach (var loaded in assemblyLoaded)
+                assemblyReferenced.Remove(loaded);
+            Console.WriteLine("Referenced assemblies (not loaded):");
+            foreach (var referenced in assemblyReferenced)
+                Console.WriteLine($"\t{referenced}");
+
             CheckExit(exitProgram);
         }
 

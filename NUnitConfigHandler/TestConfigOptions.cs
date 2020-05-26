@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using ConfigHandler;
+using DummyLibrary;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using static NUnitConfigHandler.MyConfig;
@@ -106,8 +107,27 @@ namespace NUnitConfigHandler
                 @"--TestLong=197",
            //     @"--TestList2=a,b,c"     
             };
+
+            _ = new Dummy();
+
             var config = BaseConfig.LoadAll<MyConfig>(null, args.ToArray());
             Assert.IsTrue(config.TestLong == 197 && config.TestDate == new DateTime(2020, 05, 02));
         }
+
+        [Test]
+        public void TestDisplayVersion()
+        {
+            var args = new List<string>()
+            {
+                @"--Version"
+           //     @"--TestList2=a,b,c"     
+            };
+            //test display version
+            BaseConfig.LoadAll<MyConfig>(null, args.ToArray());
+
+           
+
+        }
+
     }
 }

@@ -233,7 +233,9 @@ namespace ConfigHandler
             {
                 var customAttribute = attribute as T;
                 var property = customAttribute.GetType().GetProperty(propertyName);
-                Console.WriteLine($"\t{propertyName} = {property.GetValue(customAttribute)}");
+                var value = property.GetValue(customAttribute).ToString();
+                if (!string.IsNullOrWhiteSpace(value))
+                    Console.WriteLine($"\t{propertyName} = {value}");
             }
         }
 
@@ -273,6 +275,9 @@ namespace ConfigHandler
                     ShowCustomAttributes<TargetFrameworkAttribute>(assembly, "FrameworkName");
                     ShowCustomAttributes<AssemblyInformationalVersionAttribute>(assembly, "InformationalVersion");
                     ShowCustomAttributes<AssemblyConfigurationAttribute>(assembly, "Configuration");
+                    ShowCustomAttributes<AssemblyDescriptionAttribute>(assembly, "Description");
+                    ShowCustomAttributes<AssemblyCopyrightAttribute>(assembly, "Copyright");
+                    ShowCustomAttributes<AssemblyCompanyAttribute>(assembly, "Company");
                     Console.WriteLine();
                 }
             }
@@ -389,14 +394,14 @@ namespace ConfigHandler
                 });
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="args"></param>
-        /// <param name="DefaultConfigFile"></param>
-        /// <param name="showHelpVersion"></param>
-        /// <returns></returns>
+       /// <summary>
+       /// Load config from optional file, with optional arguments override
+       /// </summary>
+       /// <typeparam name="T"></typeparam>
+       /// <param name="DefaultConfigFile">The file to load, may recursively refrence other config files (see ParentConfigFile)</param>
+       /// <param name="args">the command line args to parse</param>
+       /// <param name="showHelpVersion">Display Help or Version if flag is set</param>
+       /// <returns></returns>
         public static T LoadAll<T>(string DefaultConfigFile, string[] args = null, bool showHelpVersion = true) where T : BaseConfig, new()
         {
             var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile, showHelpVersion);

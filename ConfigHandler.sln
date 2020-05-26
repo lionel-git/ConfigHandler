@@ -14,12 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{D5B4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GenericScripts", "GenericScripts", "{AFFA957E-1ADD-47D4-A18B-6DB979CC82DB}"
 	ProjectSection(SolutionItems) = preProject
-		GenericScripts\.git = GenericScripts\.git
-		GenericScripts\backup_config.bat = GenericScripts\backup_config.bat
 		GenericScripts\DeployCheckDoublon.ps1 = GenericScripts\DeployCheckDoublon.ps1
 		GenericScripts\DeployNuget.ps1 = GenericScripts\DeployNuget.ps1
-		GenericScripts\PreBuild.ps1 = GenericScripts\PreBuild.ps1
-		GenericScripts\README.md = GenericScripts\README.md
+		GenericScripts\GenGitPropsFile.ps1 = GenericScripts\GenGitPropsFile.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PSModules", "PSModules", "{F97D89EB-8101-47A3-81F7-AA7F8318796D}"

@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File ..\GenericScripts\PreBuild.ps1" />
+    <Exec Command="powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File ..\GenericScripts\GenGitPropsFile.ps1" />
   </Target>
 
 </Project>

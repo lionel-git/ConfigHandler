@@ -85,6 +85,15 @@ namespace ConfigHandler
             DefaultValueHandling = DefaultValueHandling.Ignore
         };
 
+        /// <summary>
+        /// Return true if Version is True or All
+        /// </summary>
+        /// <returns></returns>
+        public bool IsVersionSet()
+        {
+            return Version == VersionOption.All || Version == VersionOption.True;
+        }
+
         static BaseConfig()
         {
             // Set default settings only if user has not defined them
@@ -390,7 +399,7 @@ namespace ConfigHandler
                     }
                 }
             }
-            if ((Version == VersionOption.All || Version == VersionOption.True) && showHelpVersion)
+            if (IsVersionSet() && showHelpVersion)
                 ShowVersion(false);
             if (Help && showHelpVersion)
                 ShowHelp(false);

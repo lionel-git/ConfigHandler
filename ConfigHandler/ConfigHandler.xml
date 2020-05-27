@@ -14,14 +14,14 @@
             Options for --Version command line option
             </summary>
         </member>
-        <member name="F:ConfigHandler.BaseConfig.VersionOption.True">
-            <summary>
-            Display infos on non system assemblies
-            </summary>
-        </member>
         <member name="F:ConfigHandler.BaseConfig.VersionOption.False">
             <summary>
             Do not display version infos
+            </summary>
+        </member>
+        <member name="F:ConfigHandler.BaseConfig.VersionOption.True">
+            <summary>
+            Display infos on non system assemblies
             </summary>
         </member>
         <member name="F:ConfigHandler.BaseConfig.VersionOption.All">

@@ -129,5 +129,12 @@ namespace NUnitConfigHandler
 
         }
 
+        [Test]
+        public void TestEmptyConfig()
+        {
+            var config = BaseConfig.LoadAll<MyConfig>(null, null);
+            var s = config.ToString();
+        }
+
     }
 }

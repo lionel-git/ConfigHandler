@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace ConfigHandler
 {
@@ -20,16 +21,17 @@ namespace ConfigHandler
         /// <summary>
         /// Options for --Version command line option
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum VersionOption
         {
-            /// <summary>
-            /// Display infos on non system assemblies
-            /// </summary>
-            True,
             /// <summary>
             /// Do not display version infos
             /// </summary>
             False,
+            /// <summary>
+            /// Display infos on non system assemblies
+            /// </summary>
+            True,
             /// <summary>
             /// Display infos for all assemblies
             /// </summary>

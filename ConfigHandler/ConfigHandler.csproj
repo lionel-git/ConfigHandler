@@ -7,12 +7,15 @@
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <PackageTags>Options Configuration</PackageTags>
     <Authors>LD</Authors>
-    <Company>LD Inc</Company>
+    <Company></Company>
     <RepositoryType>Git</RepositoryType>
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>NU5105</NoWarn>
-    <PackageReleaseNotes>Some updates</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIcon>configuration_250.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/lionel-git/ConfigHandler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lionel-git/ConfigHandler</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

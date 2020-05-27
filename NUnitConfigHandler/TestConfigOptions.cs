@@ -74,7 +74,7 @@ namespace NUnitConfigHandler
             var content2 = File.ReadAllText(File2);
             var content3 = File.ReadAllText(File3);
 
-            Assert.AreEqual(content2, content3);        
+            Assert.AreEqual(content2, content3);
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace NUnitConfigHandler
             //test display version
             BaseConfig.LoadAll<MyConfig>(null, args.ToArray());
 
-           
+
 
         }
 

@@ -57,6 +57,12 @@
             </summary>
             <param name="settings"></param>
         </member>
+        <member name="M:ConfigHandler.BaseConfig.IsVersionSet">
+            <summary>
+            Return true if Version is True or All
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:ConfigHandler.BaseConfig.#ctor">
             <summary>
             Instanciate an empty BaseConfig

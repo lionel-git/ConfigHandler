@@ -5,8 +5,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json;
 using System.Runtime.Versioning;
+using Newtonsoft.Json;
 
 namespace ConfigHandler
 {
@@ -254,7 +254,7 @@ namespace ConfigHandler
             return $"{assembly.GetName().Name}, {assembly.GetName().Version}";
         }
 
-        private static void ShowCustomAttributes<T>(Assembly assembly, string propertyName) where T : class 
+        private static void ShowCustomAttributes<T>(Assembly assembly, string propertyName) where T : class
         {
             var attributes = assembly.GetCustomAttributes(typeof(T));
             foreach (var attribute in attributes)
@@ -425,14 +425,14 @@ namespace ConfigHandler
                 });
         }
 
-       /// <summary>
-       /// Load config from optional file, with optional arguments override
-       /// </summary>
-       /// <typeparam name="T"></typeparam>
-       /// <param name="DefaultConfigFile">The file to load, may recursively refrence other config files (see ParentConfigFile)</param>
-       /// <param name="args">the command line args to parse</param>
-       /// <param name="showHelpVersion">Display Help or Version if flag is set</param>
-       /// <returns></returns>
+        /// <summary>
+        /// Load config from optional file, with optional arguments override
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="DefaultConfigFile">The file to load, may recursively refrence other config files (see ParentConfigFile)</param>
+        /// <param name="args">the command line args to parse</param>
+        /// <param name="showHelpVersion">Display Help or Version if flag is set</param>
+        /// <returns></returns>
         public static T LoadAll<T>(string DefaultConfigFile, string[] args = null, bool showHelpVersion = true) where T : BaseConfig, new()
         {
             var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile, showHelpVersion);

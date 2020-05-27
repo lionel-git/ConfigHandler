@@ -12,7 +12,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <NoWarn>NU5105</NoWarn>
     <PackageReleaseNotes>Some updates</PackageReleaseNotes>
-    <PackageIcon>16038.ico</PackageIcon>
+    <PackageIcon>configuration_250.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -23,7 +23,7 @@
     <None Remove="ConfigHandler.xml" />
     <None Remove="Directory.Build.props" />
     <None Include="..\.editorconfig" Link=".editorconfig" />
-    <None Include="16038.ico">
+    <None Include="configuration_250.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

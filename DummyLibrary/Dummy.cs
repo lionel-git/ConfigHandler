@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DummyLibrary
+﻿namespace DummyLibrary
 {
     public class Dummy
     {

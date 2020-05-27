@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using ConfigHandler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using NUnit.Framework.Internal;
 
 namespace NUnitConfigHandler
 {

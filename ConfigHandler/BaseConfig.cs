@@ -18,6 +18,25 @@ namespace ConfigHandler
         private const String EmptyValue = "\"\"";
 
         /// <summary>
+        /// Options for --Version command line option
+        /// </summary>
+        public enum VersionOption
+        {
+            /// <summary>
+            /// Display infos on non system assemblies
+            /// </summary>
+            True,
+            /// <summary>
+            /// Do not display version infos
+            /// </summary>
+            False,
+            /// <summary>
+            /// Display infos for all assemblies
+            /// </summary>
+            All
+        }
+
+        /// <summary>
         /// Path to the config file
         /// </summary>
         [OptionAttribute("The config file to use for startup")]
@@ -41,7 +60,7 @@ namespace ConfigHandler
         /// If set, display versions informations
         /// </summary>
         [OptionAttribute("Display versions information")]
-        public bool Version { get; set; }
+        public VersionOption Version { get; set; }
 
         private static bool _customJsonSerializerSettings = false;
 
@@ -239,10 +258,11 @@ namespace ConfigHandler
             }
         }
 
-        private static bool IsSystemAssembly(string name)
+        private bool IsDisplayedAssembly(string name)
         {
-            return name.StartsWith("System.", StringComparison.Ordinal) ||
-                   name.StartsWith("Microsoft.", StringComparison.Ordinal);
+            return (Version == VersionOption.All) ||
+                    (!name.StartsWith("System.", StringComparison.Ordinal) &&
+                     !name.StartsWith("Microsoft.", StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -261,13 +281,13 @@ namespace ConfigHandler
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 var fullName = assembly.FullName;
-                if (!IsSystemAssembly(fullName))
+                if (IsDisplayedAssembly(fullName))
                 {
                     assemblyLoaded.Add(assembly.FullName);
                     foreach (var name in assembly.GetReferencedAssemblies())
                     {
                         var assemblyName = name.ToString();
-                        if (!IsSystemAssembly(assemblyName))
+                        if (IsDisplayedAssembly(assemblyName))
                             assemblyReferenced.Add(assemblyName);
                     }
                     var location = assembly.IsDynamic ? "Dynamic" : assembly.Location;
@@ -335,6 +355,8 @@ namespace ConfigHandler
                     // property Value null allowed for bool
                     if (targetType == typeof(bool))
                         property.SetValue(this, true);
+                    else if (targetType == typeof(VersionOption))
+                        property.SetValue(this, VersionOption.True);
                     else
                     {
                         throw new ConfigHandlerException($"No value passed for '{propertyName}'?");
@@ -368,7 +390,7 @@ namespace ConfigHandler
                     }
                 }
             }
-            if (Version && showHelpVersion)
+            if ((Version == VersionOption.All || Version == VersionOption.True) && showHelpVersion)
                 ShowVersion(false);
             if (Help && showHelpVersion)
                 ShowHelp(false);

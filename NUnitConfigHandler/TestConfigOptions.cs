@@ -119,7 +119,7 @@ namespace NUnitConfigHandler
         {
             var args = new List<string>()
             {
-                @"--Version"
+                @"--Version=All"
            //     @"--TestList2=a,b,c"     
             };
             //test display version

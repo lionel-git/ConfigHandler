@@ -92,6 +92,13 @@
             </summary>
             <param name="exitProgram"></param>
         </member>
+        <member name="M:ConfigHandler.BaseConfig.GetVersion(ConfigHandler.BaseConfig.VersionOption)">
+            <summary>
+            Return infos on the currently loaded dlls + referenced ones
+            </summary>
+            <param name="versionOption">Control type of infos</param>
+            <returns></returns>
+        </member>
         <member name="M:ConfigHandler.BaseConfig.ShowVersion(System.Boolean)">
             <summary>
             Display version infos

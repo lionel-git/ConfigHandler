@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -256,8 +257,9 @@ namespace ConfigHandler
             return $"{assembly.GetName().Name}, {assembly.GetName().Version}";
         }
 
-        private static void ShowCustomAttributes<T>(Assembly assembly, string propertyName) where T : class
+        private static string GetCustomAttributes<T>(Assembly assembly, string propertyName) where T : class
         {
+            var sb = new StringBuilder();
             var attributes = assembly.GetCustomAttributes(typeof(T));
             foreach (var attribute in attributes)
             {
@@ -265,16 +267,65 @@ namespace ConfigHandler
                 var property = customAttribute.GetType().GetProperty(propertyName);
                 var value = property.GetValue(customAttribute).ToString();
                 if (!string.IsNullOrWhiteSpace(value))
-                    Console.WriteLine($"\t{propertyName} = {value}");
+                    sb.AppendLine($"\t{propertyName} = {value}");
             }
+            return sb.ToString();
         }
 
-        private bool IsDisplayedAssembly(string name)
+        private static bool IsDisplayedAssembly(string name, VersionOption versionOption)
         {
-            return (Version == VersionOption.All) ||
+            return (versionOption == VersionOption.All) ||
                     (!name.StartsWith("System.", StringComparison.Ordinal) &&
                      !name.StartsWith("Microsoft.", StringComparison.Ordinal));
         }
+
+        /// <summary>
+        /// Return infos on the currently loaded dlls + referenced ones
+        /// </summary>
+        /// <param name="versionOption">Control type of infos</param>
+        /// <returns></returns>
+        public static string GetVersion(VersionOption versionOption)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Assembly Versions:");
+            sb.AppendLine($"Entry    : {GetShortName(Assembly.GetEntryAssembly())}");
+            sb.AppendLine($"Executing: {GetShortName(Assembly.GetExecutingAssembly())}");
+            sb.AppendLine("=====");
+            sb.AppendLine("Loaded assemblies:");
+            var assemblyLoaded = new HashSet<string>();
+            var assemblyReferenced = new HashSet<string>();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var fullName = assembly.FullName;
+                if (IsDisplayedAssembly(fullName, versionOption))
+                {
+                    assemblyLoaded.Add(assembly.FullName);
+                    foreach (var name in assembly.GetReferencedAssemblies())
+                    {
+                        var assemblyName = name.ToString();
+                        if (IsDisplayedAssembly(assemblyName, versionOption))
+                            assemblyReferenced.Add(assemblyName);
+                    }
+                    var location = assembly.IsDynamic ? "Dynamic" : assembly.Location;
+                    sb.AppendLine($"{GetShortName(assembly)} ({location})");
+                    sb.Append(GetCustomAttributes<TargetFrameworkAttribute>(assembly, "FrameworkName"));
+                    sb.Append(GetCustomAttributes<AssemblyInformationalVersionAttribute>(assembly, "InformationalVersion"));
+                    sb.Append(GetCustomAttributes<AssemblyConfigurationAttribute>(assembly, "Configuration"));
+                    sb.Append(GetCustomAttributes<AssemblyDescriptionAttribute>(assembly, "Description"));
+                    sb.Append(GetCustomAttributes<AssemblyCopyrightAttribute>(assembly, "Copyright"));
+                    sb.Append(GetCustomAttributes<AssemblyCompanyAttribute>(assembly, "Company"));
+                    sb.AppendLine();
+                }
+            }
+            // Display referenced
+            foreach (var loaded in assemblyLoaded)
+                assemblyReferenced.Remove(loaded);
+            sb.AppendLine("Referenced assemblies (not loaded):");
+            foreach (var referenced in assemblyReferenced)
+                sb.AppendLine($"\t{referenced}");
+            return sb.ToString();
+        }
+
 
         /// <summary>
         /// Display version infos
@@ -282,43 +333,7 @@ namespace ConfigHandler
         /// <param name="exitProgram"></param>
         public virtual void ShowVersion(bool exitProgram)
         {
-            Console.WriteLine("Assembly Versions:");
-            Console.WriteLine($"Entry    : {GetShortName(Assembly.GetEntryAssembly())}");
-            Console.WriteLine($"Executing: {GetShortName(Assembly.GetExecutingAssembly())}");
-            Console.WriteLine("=====");
-            Console.WriteLine("Loaded assemblies:");
-            var assemblyLoaded = new HashSet<string>();
-            var assemblyReferenced = new HashSet<string>();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                var fullName = assembly.FullName;
-                if (IsDisplayedAssembly(fullName))
-                {
-                    assemblyLoaded.Add(assembly.FullName);
-                    foreach (var name in assembly.GetReferencedAssemblies())
-                    {
-                        var assemblyName = name.ToString();
-                        if (IsDisplayedAssembly(assemblyName))
-                            assemblyReferenced.Add(assemblyName);
-                    }
-                    var location = assembly.IsDynamic ? "Dynamic" : assembly.Location;
-                    Console.WriteLine($"{GetShortName(assembly)} ({location})");
-                    ShowCustomAttributes<TargetFrameworkAttribute>(assembly, "FrameworkName");
-                    ShowCustomAttributes<AssemblyInformationalVersionAttribute>(assembly, "InformationalVersion");
-                    ShowCustomAttributes<AssemblyConfigurationAttribute>(assembly, "Configuration");
-                    ShowCustomAttributes<AssemblyDescriptionAttribute>(assembly, "Description");
-                    ShowCustomAttributes<AssemblyCopyrightAttribute>(assembly, "Copyright");
-                    ShowCustomAttributes<AssemblyCompanyAttribute>(assembly, "Company");
-                    Console.WriteLine();
-                }
-            }
-            // Display referenced
-            foreach (var loaded in assemblyLoaded)
-                assemblyReferenced.Remove(loaded);
-            Console.WriteLine("Referenced assemblies (not loaded):");
-            foreach (var referenced in assemblyReferenced)
-                Console.WriteLine($"\t{referenced}");
-
+            Console.WriteLine(GetVersion(Version));
             CheckExit(exitProgram);
         }
 

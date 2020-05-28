@@ -130,10 +130,10 @@ namespace NUnitConfigHandler
         }
 
         [Test]
-        public void TestEmptyConfig()
+        public void TestNoConfigNoOptions()
         {
             var config = BaseConfig.LoadAll<MyConfig>(null, null);
-            var s = config.ToString();
+            Console.WriteLine(config);
         }
 
     }

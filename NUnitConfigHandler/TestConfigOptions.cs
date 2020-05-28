@@ -136,5 +136,12 @@ namespace NUnitConfigHandler
             Console.WriteLine(config);
         }
 
+        [Test]
+        public void TestEnvVar()
+        {
+            Environment.SetEnvironmentVariable("MYCONFIG_MYCOLOR", "Blue", EnvironmentVariableTarget.Process);
+            var config = BaseConfig.LoadAll<MyConfig>(null, null);
+            Console.WriteLine(config);
+        }
     }
 }

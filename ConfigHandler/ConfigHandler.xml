@@ -109,6 +109,11 @@
             </summary>
             <param name="exitProgram"></param>
         </member>
+        <member name="M:ConfigHandler.BaseConfig.UpdateFromEnvVars">
+            <summary>
+            Init default values from env vars
+            </summary>
+        </member>
         <member name="M:ConfigHandler.BaseConfig.LoadAll``1(System.String,System.String[],System.Boolean)">
             <summary>
             Load config from optional config file, with optional arguments override
@@ -141,6 +146,22 @@
             </summary>
             <param name="message"></param>
             <param name="inner"></param>
+        </member>
+        <member name="T:ConfigHandler.EnvVarAttribute">
+            <summary>
+            MetaData for specifying Env Var link
+            </summary>
+        </member>
+        <member name="P:ConfigHandler.EnvVarAttribute.EnvVarName">
+            <summary>
+            Corresponding Env Var
+            </summary>
+        </member>
+        <member name="M:ConfigHandler.EnvVarAttribute.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="envVarName"></param>
         </member>
         <member name="T:ConfigHandler.Helpers">
             <summary>
@@ -193,11 +214,6 @@
         <member name="P:ConfigHandler.OptionAttribute.DisplayFormat">
             <summary>
             Try to display value from ToString('DisplayFormat')
-            </summary>
-        </member>
-        <member name="M:ConfigHandler.OptionAttribute.#ctor">
-            <summary>
-            Create an OptionAttribute
             </summary>
         </member>
         <member name="M:ConfigHandler.OptionAttribute.#ctor(System.String,System.String)">

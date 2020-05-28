@@ -447,6 +447,24 @@ namespace ConfigHandler
         }
 
         /// <summary>
+        /// Init default values from env vars
+        /// </summary>
+        private void UpdateFromEnvVars()
+        {
+            foreach (var property in GetType().GetProperties())
+            {
+                var envVarAttributes = property.GetCustomAttributes(typeof(EnvVarAttribute), false) as EnvVarAttribute[];
+                if (envVarAttributes.Length >= 1)
+                {
+                    var enVarName = envVarAttributes.First().EnvVarName;
+                    var value = Environment.GetEnvironmentVariable(enVarName, EnvironmentVariableTarget.Process);
+                    if (value != null)
+                        UpdateProperty(property.Name, value);
+                }
+            }
+        }
+
+        /// <summary>
         /// Load config from optional config file, with optional arguments override
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -457,7 +475,8 @@ namespace ConfigHandler
         public static T LoadAll<T>(string DefaultConfigFile, string[] args = null, bool showHelpVersion = true) where T : BaseConfig, new()
         {
             var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile, showHelpVersion);
-            T config;
+            var config = new T();
+            config.UpdateFromEnvVars();
             if (!string.IsNullOrEmpty(configFile))
             {
                 _logger?.InfoMsg($"Loading config file: '{configFile}'");
@@ -468,13 +487,10 @@ namespace ConfigHandler
                     configFile = Load<T>(configFile).ParentConfigFile;
                     if (stack.Count > 10)
                         throw new ConfigHandlerException($"Recursion level exceeded: {stack.Count} => {string.Join(",", stack.ToList())}");
-                }
-                config = Load<T>(stack.Pop()); // throw if 0 elts, should not happen
+                }                
                 while (stack.Count > 0)
                     config.UpdateFromSpecificConfig(stack.Pop());
             }
-            else
-                config = new T();
             config.UpdateFromCmdLine(args, false);
             return config;
         }

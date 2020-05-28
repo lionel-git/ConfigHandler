@@ -17,9 +17,11 @@ namespace NUnitConfigHandler
             Blue
         }
 
+        [EnvVar("MYCONFIG_MYCOLOR")]
         public Color MyColor { get; set; }
         public List<Color> MyColors { get; set; }
 
+        [EnvVar("MYCONFIG_MYMACHINE")]
         public string Machine { get; set; }
 
         public Dictionary<Color, string> ColorMeaning { get; set; }

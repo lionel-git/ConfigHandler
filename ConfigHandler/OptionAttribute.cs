@@ -21,13 +21,6 @@ namespace ConfigHandler
         /// <summary>
         /// Create an OptionAttribute
         /// </summary>
-        public OptionAttribute()
-        {
-        }
-
-        /// <summary>
-        /// Create an OptionAttribute
-        /// </summary>
         /// <param name="helpMessage"></param>
         /// <param name="displayFormat"></param>
         public OptionAttribute(string helpMessage, string displayFormat = null)

@@ -13,14 +13,14 @@ using Newtonsoft.Json.Converters;
 namespace ConfigHandler
 {
     /// <summary>
-    /// Base class for definig configs
+    /// Base class for defining a config class
     /// </summary>
     public class BaseConfig
     {
         private const String EmptyValue = "\"\"";
 
         /// <summary>
-        /// Options for --Version command line option
+        /// Options for "--Version" command line option
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
         public enum VersionOption
@@ -30,7 +30,7 @@ namespace ConfigHandler
             /// </summary>
             False,
             /// <summary>
-            /// Display infos on non system assemblies
+            /// Display infos for non system assemblies
             /// </summary>
             True,
             /// <summary>
@@ -42,7 +42,7 @@ namespace ConfigHandler
         /// <summary>
         /// Path to the config file
         /// </summary>
-        [OptionAttribute("The config file to use for startup")]
+        [Option("The config file to use for startup")]
         public string ConfigFile { get; set; }
 
         /// <summary>
@@ -50,19 +50,19 @@ namespace ConfigHandler
         /// If set, first load parent config and then populate from this config file
         /// This can be recursive up to 10 levels
         /// </summary>
-        [OptionAttribute("Optional parent config file")]
+        [Option("Optional parent config file")]
         public string ParentConfigFile { get; set; }
 
         /// <summary>
         /// If set, display help
         /// </summary>
-        [OptionAttribute("Display help")]
+        [Option("Display help")]
         public bool Help { get; set; }
 
         /// <summary>
         /// If set, display versions informations
         /// </summary>
-        [OptionAttribute("Display versions information")]
+        [Option("Display versions information")]
         public VersionOption Version { get; set; }
 
         private static bool _customJsonSerializerSettings = false;
@@ -70,7 +70,11 @@ namespace ConfigHandler
         private static ILogger _logger;
 
         /// <summary>
-        /// Option to redefine serialisation settings
+        /// Option to redefine serialisation settings (json options)
+        /// Default is:
+        ///   MissingMemberHandling.Error
+        ///   NullValueHandling.Ignore
+        ///   DefaultValueHandling.Ignore
         /// </summary>
         /// <param name="settings"></param>
         public static void SetDefaultJsonConfig(JsonSerializerSettings settings)
@@ -443,12 +447,12 @@ namespace ConfigHandler
         }
 
         /// <summary>
-        /// Load config from optional file, with optional arguments override
+        /// Load config from optional config file, with optional arguments override
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="DefaultConfigFile">The file to load, may recursively refrence other config files (see ParentConfigFile)</param>
+        /// <param name="DefaultConfigFile">The file to load, may recursively reference other config files (see ParentConfigFile)</param>
         /// <param name="args">the command line args to parse</param>
-        /// <param name="showHelpVersion">Display Help or Version if flag is set</param>
+        /// <param name="showHelpVersion">Display Help or Version if either option is set</param>
         /// <returns></returns>
         public static T LoadAll<T>(string DefaultConfigFile, string[] args = null, bool showHelpVersion = true) where T : BaseConfig, new()
         {

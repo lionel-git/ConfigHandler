@@ -6,12 +6,12 @@
     <members>
         <member name="T:ConfigHandler.BaseConfig">
             <summary>
-            Base class for definig configs
+            Base class for defining a config class
             </summary>
         </member>
         <member name="T:ConfigHandler.BaseConfig.VersionOption">
             <summary>
-            Options for --Version command line option
+            Options for "--Version" command line option
             </summary>
         </member>
         <member name="F:ConfigHandler.BaseConfig.VersionOption.False">
@@ -21,7 +21,7 @@
         </member>
         <member name="F:ConfigHandler.BaseConfig.VersionOption.True">
             <summary>
-            Display infos on non system assemblies
+            Display infos for non system assemblies
             </summary>
         </member>
         <member name="F:ConfigHandler.BaseConfig.VersionOption.All">
@@ -53,7 +53,11 @@
         </member>
         <member name="M:ConfigHandler.BaseConfig.SetDefaultJsonConfig(Newtonsoft.Json.JsonSerializerSettings)">
             <summary>
-            Option to redefine serialisation settings
+            Option to redefine serialisation settings (json options)
+            Default is:
+              MissingMemberHandling.Error
+              NullValueHandling.Ignore
+              DefaultValueHandling.Ignore
             </summary>
             <param name="settings"></param>
         </member>
@@ -107,12 +111,12 @@
         </member>
         <member name="M:ConfigHandler.BaseConfig.LoadAll``1(System.String,System.String[],System.Boolean)">
             <summary>
-            Load config from optional file, with optional arguments override
+            Load config from optional config file, with optional arguments override
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="DefaultConfigFile">The file to load, may recursively refrence other config files (see ParentConfigFile)</param>
+            <param name="DefaultConfigFile">The file to load, may recursively reference other config files (see ParentConfigFile)</param>
             <param name="args">the command line args to parse</param>
-            <param name="showHelpVersion">Display Help or Version if flag is set</param>
+            <param name="showHelpVersion">Display Help or Version if either option is set</param>
             <returns></returns>
         </member>
         <member name="T:ConfigHandler.ConfigHandlerException">

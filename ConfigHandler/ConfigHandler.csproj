@@ -26,9 +26,13 @@
     <None Remove="ConfigHandler.xml" />
     <None Remove="Directory.Build.props" />
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\README.md" Link="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="configuration_250.png">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
@@ -44,18 +48,4 @@
     <Exec Command="powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File ..\GenericScripts\GenGitPropsFile.ps1" />
   </Target>
 
-  <ItemGroup>
-    <Content Include="readme.md">
-      <Pack>true</Pack>
-      <PackagePath>\</PackagePath>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="readme.txt">
-      <Pack>true</Pack>
-      <PackagePath>\</PackagePath>
-    </Content>
-  </ItemGroup>
-  
 </Project>

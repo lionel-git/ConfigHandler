@@ -26,7 +26,7 @@ namespace NUnitConfigHandler
 
         public Dictionary<Color, string> ColorMeaning { get; set; }
 
-        [OptionAttribute("Test a date", "yyyy/MM/dd")]
+        [Option("Test a date", "yyyy/MM/dd")]
         public DateTime TestDate { get; set; }
 
         public HashSet<string> TestHash { get; set; }

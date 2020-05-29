@@ -227,6 +227,15 @@ namespace ConfigHandler
             }
         }
 
+        private static string GetOptionEnvVar(PropertyInfo property)
+        {
+            var envVarAttributes = property.GetCustomAttributes(typeof(EnvVarAttribute), false) as EnvVarAttribute[];
+            if (envVarAttributes.Length >= 1)
+                return envVarAttributes.First().EnvVarName;
+            else
+                return null;
+        }
+
         private static void CheckExit(bool exitProgram)
         {
             if (exitProgram)
@@ -239,8 +248,8 @@ namespace ConfigHandler
         /// <param name="exitProgram"></param>
         public virtual void ShowHelp(bool exitProgram)
         {
-            Console.WriteLine($"Syntax: {Assembly.GetEntryAssembly().GetName().Name} --option1=... --option2=...");
-            Console.WriteLine("Lists are comma separated");
+            Console.WriteLine($"Syntax: {Assembly.GetEntryAssembly().GetName().Name} --option1=... --option2=... (lists are comma separated)");
+            Console.WriteLine($"Options for config {GetLastType(GetType())}:\n");
             foreach (var property in GetType().GetProperties())
             {
                 Console.WriteLine($"--{property.Name,-20}  ({GetPropertyType(property)})");
@@ -251,6 +260,9 @@ namespace ConfigHandler
                 var enumValues = GetEnumValues(property);
                 if (!string.IsNullOrEmpty(enumValues))
                     Console.WriteLine($"\tPossible values: {enumValues}");
+                var envVar = GetOptionEnvVar(property);
+                if (!string.IsNullOrEmpty(envVar))
+                    Console.WriteLine($"\tAssociated Env. Var: {envVar}");
                 Console.WriteLine();
             }
             CheckExit(exitProgram);

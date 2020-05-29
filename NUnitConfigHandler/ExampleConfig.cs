@@ -1,13 +1,14 @@
-# ConfigHandler
-
-- Example of use:
-```csharp
+﻿using System;
+using System.Collections.Generic;
+using ConfigHandler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using ConfigHandler;
 
- public class DummyConfig : BaseConfig
+namespace NUnitConfigHandler
+{
+    public class ExampleConfig : BaseConfig
     {
+
         [JsonConverter(typeof(StringEnumConverter))]
         public enum Color
         {
@@ -28,9 +29,9 @@ using ConfigHandler;
         [Option("Test a date", "yyyy/MM/dd")]
         public DateTime TestDate { get; set; }
 
-        public MyConfig()
+        public ExampleConfig()
         {
             MyColors = new List<Color>();
         }
     }
-```
+}

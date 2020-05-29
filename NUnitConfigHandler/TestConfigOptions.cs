@@ -143,5 +143,17 @@ namespace NUnitConfigHandler
             var config = BaseConfig.LoadAll<MyConfig>(null, null);
             Console.WriteLine(config);
         }
+
+        [Test]
+        public void TestHelp()
+        {
+            var args = new List<string>()
+            {
+                @"--Help"
+           //     @"--TestList2=a,b,c"     
+            };
+            BaseConfig.LoadAll<ExampleConfig>(null, args.ToArray());
+        }
+
     }
 }

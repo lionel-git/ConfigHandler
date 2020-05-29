@@ -155,5 +155,17 @@ namespace NUnitConfigHandler
             BaseConfig.LoadAll<ExampleConfig>(null, args.ToArray());
         }
 
+        [Test]
+        public void TestExample()
+        {
+            var args = new List<string>()
+            {
+                @"--Help"
+           //     @"--TestList2=a,b,c"     
+            };
+            var c = BaseConfig.LoadAll<ExampleConfig>("exampleConfig.json", args.ToArray());
+            Console.WriteLine(c);
+        }
+
     }
 }

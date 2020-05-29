@@ -57,12 +57,14 @@ namespace ConfigHandler
         /// If set, display help
         /// </summary>
         [Option("Display help")]
+        [JsonIgnore]
         public bool Help { get; set; }
 
         /// <summary>
         /// If set, display versions informations
         /// </summary>
         [Option("Display versions information")]
+        [JsonIgnore]
         public VersionOption Version { get; set; }
 
         private static bool _customJsonSerializerSettings = false;

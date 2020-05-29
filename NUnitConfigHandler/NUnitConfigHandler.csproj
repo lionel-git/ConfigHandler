@@ -18,4 +18,13 @@
     <ProjectReference Include="..\DummyLibrary\DummyLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ExampleConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="GenericExampleConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

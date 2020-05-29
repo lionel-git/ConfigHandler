@@ -1,1 +1,4 @@
 ﻿Set from Env Var
+
+Mettre au point ExampleConfig avec example plus réaliste + all options
+

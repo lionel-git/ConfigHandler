@@ -6,32 +6,33 @@ using Newtonsoft.Json.Converters;
 
 namespace NUnitConfigHandler
 {
+    // Just a dummy example
     public class ExampleConfig : BaseConfig
     {
-
         [JsonConverter(typeof(StringEnumConverter))]
-        public enum Color
+        public enum Priority
         {
             Undefined,
-            Red,
-            Green,
-            Blue
+            Low,
+            Medium,
+            High
         }
 
-        [EnvVar("MYCONFIG_MYCOLOR")]
-        public Color MyColor { get; set; }
+        [EnvVar("EXAMPLE_BATCH_PRIORITY")]
+        [Option("Priority of batch")]
+        public Priority BatchPriority { get; set; }
 
-        public List<Color> MyColors { get; set; }
+        [EnvVar("EXAMPLE_SERVER")]
+        public string Server { get; set; }
 
-        [EnvVar("MYCONFIG_MYMACHINE")]
-        public string Machine { get; set; }
-
-        [Option("Test a date", "yyyy/MM/dd")]
+        [Option("Test date", "yyyy/MM/dd")]
         public DateTime TestDate { get; set; }
+
+        [Option("List of mail addresses")]
+        public List<string> MailRecipients { get; set; }
 
         public ExampleConfig()
         {
-            MyColors = new List<Color>();
         }
     }
 }

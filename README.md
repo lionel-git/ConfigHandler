@@ -1,6 +1,13 @@
 # ConfigHandler
 
-- Example of use:
+## Summary
+ConfigHandler allows to load a config file (json format) and possibly override some parameters from command line arguments
+
+The default values may also be set from environment variables.
+
+The config may recursively reference a "parent" config file.
+
+- Usage example:
 ```csharp
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -33,4 +40,31 @@ using ConfigHandler;
             MyColors = new List<Color>();
         }
     }
+
+....
+
+    static void Main(string[] args)
+    {
+        var config = BaseConfig.LoadAll<ExampleConfig>("exampleConfig.json", args);
+        ...
+    }
+
+```
+
+- Example config files:
+
+exampleConfig.json
+```json
+{
+  "MyColor": "Red",
+  "MyColors": [
+    "Red",
+    "Blue"
+  ],
+  "ColorMeaning": {
+    "Red": "Angry",
+    "Green": "Happy"
+  }
+}
+
 ```

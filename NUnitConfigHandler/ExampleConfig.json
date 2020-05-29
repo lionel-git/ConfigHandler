@@ -1,0 +1,7 @@
+﻿{
+  "ParentConfigFile": "GenericExampleConfig.json",
+  "MailRecipients": [
+    "joe@joe.com",
+    "bill@bill.com"
+  ]
+}

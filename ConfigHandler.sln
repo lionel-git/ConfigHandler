@@ -21,6 +21,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9F01E6B9-63EA-4F1C-90A5-73A076018B64}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		test_deploy.bat = test_deploy.bat
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DummyLibrary", "DummyLibrary\DummyLibrary.csproj", "{B7A0FB12-3FA6-4962-B4B6-A8A01A754DB2}"

@@ -119,7 +119,7 @@
             Load config from optional config file, with optional arguments override
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="DefaultConfigFile">The file to load, may recursively reference other config files (see ParentConfigFile)</param>
+            <param name="configFile">The file to load, may recursively reference other config files (see ParentConfigFile)</param>
             <param name="args">the command line args to parse</param>
             <param name="showHelpVersion">Display Help or Version if either option is set</param>
             <returns></returns>

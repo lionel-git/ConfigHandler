@@ -436,7 +436,7 @@ namespace ConfigHandler
                 return defaultConfigfile;
         }
 
-        private void UpdateFromSpecificConfig(string updateConfigPath)
+        private void UpdateFromConfig(string updateConfigPath)
         {
             var json = File.ReadAllText(updateConfigPath);
             JsonConvert.PopulateObject(json, this,
@@ -464,32 +464,39 @@ namespace ConfigHandler
             }
         }
 
+        private static Stack<string> GetStackParents<T>(string configFile) where T : BaseConfig
+        {
+            var stack = new Stack<string>();
+            while (!string.IsNullOrEmpty(configFile))
+            {
+                stack.Push(configFile);
+                if (stack.Count > 10)
+                    throw new ConfigHandlerException($"Recursion level exceeded: {stack.Count} => {string.Join(",", stack.ToList())}");
+                configFile = Load<T>(configFile).ParentConfigFile;
+            }
+            return stack;
+        }
+
+
         /// <summary>
         /// Load config from optional config file, with optional arguments override
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="DefaultConfigFile">The file to load, may recursively reference other config files (see ParentConfigFile)</param>
+        /// <param name="configFile">The file to load, may recursively reference other config files (see ParentConfigFile)</param>
         /// <param name="args">the command line args to parse</param>
         /// <param name="showHelpVersion">Display Help or Version if either option is set</param>
         /// <returns></returns>
-        public static T LoadAll<T>(string DefaultConfigFile, string[] args = null, bool showHelpVersion = true) where T : BaseConfig, new()
+        public static T LoadAll<T>(string configFile, string[] args = null, bool showHelpVersion = true) where T : BaseConfig, new()
         {
-            var configFile = GetConfigFileFromCmdLine<T>(args, DefaultConfigFile, showHelpVersion);
+            var configFileFinal = GetConfigFileFromCmdLine<T>(args, configFile, showHelpVersion);
             var config = new T();
             config.UpdateFromEnvVars();
-            if (!string.IsNullOrEmpty(configFile))
+            if (!string.IsNullOrEmpty(configFileFinal))
             {
-                _logger?.InfoMsg($"Loading config file: '{configFile}'");
-                var stack = new Stack<string>();
-                while (!string.IsNullOrEmpty(configFile))
-                {
-                    stack.Push(configFile);
-                    configFile = Load<T>(configFile).ParentConfigFile;
-                    if (stack.Count > 10)
-                        throw new ConfigHandlerException($"Recursion level exceeded: {stack.Count} => {string.Join(",", stack.ToList())}");
-                }                
+                _logger?.InfoMsg($"Loading config file: '{configFileFinal}'");
+                var stack = GetStackParents<T>(configFileFinal);
                 while (stack.Count > 0)
-                    config.UpdateFromSpecificConfig(stack.Pop());
+                    config.UpdateFromConfig(stack.Pop());
             }
             config.UpdateFromCmdLine(args, false);
             return config;

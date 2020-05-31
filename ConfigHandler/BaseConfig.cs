@@ -257,8 +257,8 @@ namespace ConfigHandler
                 Console.WriteLine($"--{property.Name,-20}  ({GetPropertyType(property)})");
                 var helpMessage = GetOptionHelp(property, out string displayFormat);
                 if (!string.IsNullOrEmpty(helpMessage))
-                    Console.WriteLine($"\tHelp: {helpMessage,-30}");
-                Console.WriteLine($"\tCurent value: {GetPropertyValue(property, displayFormat),-25}");
+                    Console.WriteLine($"\tHelp: {helpMessage}");
+                Console.WriteLine($"\tCurent value: {GetPropertyValue(property, displayFormat)}");
                 var enumValues = GetEnumValues(property);
                 if (!string.IsNullOrEmpty(enumValues))
                     Console.WriteLine($"\tPossible values: {enumValues}");

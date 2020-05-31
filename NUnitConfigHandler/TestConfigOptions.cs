@@ -163,8 +163,16 @@ namespace NUnitConfigHandler
                 @"--Help"
            //     @"--TestList2=a,b,c"     
             };
-            var c = BaseConfig.LoadAll<ExampleConfig>("exampleConfig.json", args.ToArray());
-            Console.WriteLine(c);
+            var finalConfig = BaseConfig.LoadAll<ExampleConfig>("exampleConfig.json", args.ToArray());
+            Console.WriteLine(finalConfig);
+
+            // Just o display an example of --Version output
+            args = new List<string>()
+            {
+                @"--Version"
+           //     @"--TestList2=a,b,c"     
+            };
+            BaseConfig.LoadAll<ExampleConfig>(null, args.ToArray());
         }
 
     }

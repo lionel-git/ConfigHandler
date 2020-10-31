@@ -143,12 +143,22 @@ namespace ConfigHandler
         }
 
         /// <summary>
-        /// Return config as json string
+        /// Return config as json string (indented format)
+        /// override it if you want to change format
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        /// <summary>
+        /// Return config as json string (non indented string)
+        /// </summary>
+        /// <returns></returns>
+        public virtual string ToStringFlat()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.None);
         }
 
         private static string GetValueFormatted(object value, string displayFormat, string propertyName)

@@ -86,7 +86,14 @@
         </member>
         <member name="M:ConfigHandler.BaseConfig.ToString">
             <summary>
-            Return config as json string
+            Return config as json string (indented format)
+            override it if you want to change format
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ConfigHandler.BaseConfig.ToStringFlat">
+            <summary>
+            Return config as json string (non indented string)
             </summary>
             <returns></returns>
         </member>

@@ -7,6 +7,14 @@ The default values may also be set from environment variables.
 
 The config may recursively reference a "parent" config file.
 
+Create a class that derives from ConfigHandler.BaseConfig with all the properties you want to configure, then call :
+
+```csharp
+var config = BaseConfig.LoadAll<ExampleConfig>("exampleConfig.json", args);
+```
+And you will get the config loaded from file & arguments
+
+
 - Usage example:
 ```csharp
 using System;

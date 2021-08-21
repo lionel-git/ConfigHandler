@@ -80,7 +80,7 @@ exampleConfig.json
 }
 ```
 
-GenericExample.json
+GenericExampleConfig.json
 ```json
 {
   "BatchPriority": "High",

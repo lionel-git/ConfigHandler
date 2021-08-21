@@ -15,23 +15,10 @@ namespace NUnitConfigHandler
         private const string File2 = "TempConfig2.json";
         private const string File3 = "TempConfig3.json";
 
-        // Rem: place [System.ComponentModel.DefaultValueAttribute(true)] to force default value (enum)
-        private static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings()
-        {
-            MissingMemberHandling = MissingMemberHandling.Error,
-            NullValueHandling = NullValueHandling.Ignore,
-            DefaultValueHandling = DefaultValueHandling.Ignore
-        };
-
-        private static void SetDefaultJsonConfig()
-        {
-            JsonConvert.DefaultSettings = () => DefaultJsonSerializerSettings;
-        }
-
         [SetUp]
         public void Setup()
         {
-            SetDefaultJsonConfig();
+            BaseConfig.SetDefaultJsonConfig();
             BaseConfig.SetLogger(new ConfigHandlerLogger());
         }
 
@@ -175,5 +162,10 @@ namespace NUnitConfigHandler
             BaseConfig.LoadAll<ExampleConfig>(null, args.ToArray());
         }
 
+        [Test]
+        public void TestException()
+        {
+            Assert.Throws<JsonSerializationException>(() => BaseConfig.LoadAll<ExampleConfig>("errorConfig.json"));
+        }
     }
 }

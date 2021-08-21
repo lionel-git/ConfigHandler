@@ -67,8 +67,6 @@ namespace ConfigHandler
         [JsonIgnore]
         public VersionOption Version { get; set; }
 
-        private static bool _customJsonSerializerSettings = false;
-
         private static ILogger _logger;
 
         /// <summary>
@@ -78,12 +76,13 @@ namespace ConfigHandler
         ///   NullValueHandling.Ignore
         ///   DefaultValueHandling.Ignore
         /// </summary>
-        /// <param name="settings"></param>
-        public static void SetDefaultJsonConfig(JsonSerializerSettings settings)
+        /// <param name="settings">if settings is null use defaults settings</param>
+        public static void SetDefaultJsonConfig(JsonSerializerSettings settings = null)
         {
-            // This seems local to the assembly
-            JsonConvert.DefaultSettings = () => settings;
-            _customJsonSerializerSettings = true;
+            if (settings != null)
+                JsonConvert.DefaultSettings = () => settings;
+            else
+                JsonConvert.DefaultSettings = () => DefaultJsonSerializerSettings;
         }
 
         // Rem: place [System.ComponentModel.DefaultValueAttribute(true)] to force default value (enum)
@@ -101,13 +100,6 @@ namespace ConfigHandler
         public bool IsVersionSet()
         {
             return Version == VersionOption.All || Version == VersionOption.True;
-        }
-
-        static BaseConfig()
-        {
-            // Set default settings only if user has not defined them
-            if (!_customJsonSerializerSettings)
-                SetDefaultJsonConfig(DefaultJsonSerializerSettings);
         }
 
         /// <summary>

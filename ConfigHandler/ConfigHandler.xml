@@ -59,7 +59,7 @@
               NullValueHandling.Ignore
               DefaultValueHandling.Ignore
             </summary>
-            <param name="settings"></param>
+            <param name="settings">if settings is null use defaults settings</param>
         </member>
         <member name="M:ConfigHandler.BaseConfig.IsVersionSet">
             <summary>

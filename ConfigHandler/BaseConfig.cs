@@ -118,13 +118,18 @@ namespace ConfigHandler
             return config;
         }
 
+        private string JsonSerialize(Formatting formatting)
+        {
+            return JsonConvert.SerializeObject(this, GetType(), formatting, DefaultJsonSerializerSettings);
+        }
+
         /// <summary>
         /// Save config to a file
         /// </summary>
         /// <param name="path"></param>
         public void Save(string path)
         {
-            File.WriteAllText(path, JsonConvert.SerializeObject(this, Formatting.Indented));
+            File.WriteAllText(path, JsonSerialize(Formatting.Indented));
         }
 
         /// <summary>
@@ -134,7 +139,7 @@ namespace ConfigHandler
         /// <returns></returns>
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonSerialize(Formatting.Indented);
         }
 
         /// <summary>
@@ -143,7 +148,7 @@ namespace ConfigHandler
         /// <returns></returns>
         public virtual string ToStringFlat()
         {
-            return JsonConvert.SerializeObject(this, Formatting.None);
+            return JsonSerialize(Formatting.None);
         }
 
         private static string GetValueFormatted(object value, string displayFormat, string propertyName)
@@ -164,7 +169,6 @@ namespace ConfigHandler
                 }
             }
         }
-
 
         private string GetPropertyValue(PropertyInfo property, string displayFormat)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ConfigHandler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.ComponentModel;
 
 namespace NUnitConfigHandler
 {
@@ -30,6 +31,10 @@ namespace NUnitConfigHandler
 
         [Option("List of mail addresses")]
         public List<string> MailRecipients { get; set; }
+
+        [Option("Level")]
+        [DefaultValue(true)]
+        public int Level { get; set; }
 
         public ExampleConfig()
         {

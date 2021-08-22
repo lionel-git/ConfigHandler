@@ -69,25 +69,18 @@ namespace ConfigHandler
 
         private static ILogger _logger;
 
-        /// <summary>
-        /// Option to redefine serialisation settings (json options)
-        /// Default is:
-        ///   MissingMemberHandling.Error
-        ///   NullValueHandling.Ignore
-        ///   DefaultValueHandling.Ignore
-        /// </summary>
-        /// <param name="settings">if settings is null use defaults settings</param>
-        public static void SetDefaultJsonConfig(JsonSerializerSettings settings = null)
-        {
-            if (settings != null)
-                JsonConvert.DefaultSettings = () => settings;
-            else
-                JsonConvert.DefaultSettings = () => DefaultJsonSerializerSettings;
-        }
-
-        // Rem: place [System.ComponentModel.DefaultValueAttribute(true)] to force default value (enum)
+        // Rem: you can add attribute  [System.ComponentModel.DefaultValueAttribute(true)]
+        // on a class member to force default value
         private static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings()
         {
+            MissingMemberHandling = MissingMemberHandling.Error,
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore
+        };
+
+        private static readonly JsonSerializerSettings DefaultJsonSerializerSettingsCreate = new JsonSerializerSettings()
+        {
+            ObjectCreationHandling = ObjectCreationHandling.Replace,
             MissingMemberHandling = MissingMemberHandling.Error,
             NullValueHandling = NullValueHandling.Ignore,
             DefaultValueHandling = DefaultValueHandling.Ignore
@@ -120,7 +113,7 @@ namespace ConfigHandler
 
         private static T Load<T>(string path) where T : BaseConfig
         {
-            var config = JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            var config = JsonConvert.DeserializeObject(File.ReadAllText(path), typeof(T), DefaultJsonSerializerSettings) as T;
             config.ConfigFile = path;
             return config;
         }
@@ -455,11 +448,7 @@ namespace ConfigHandler
         private void UpdateFromConfig(string updateConfigPath)
         {
             var json = File.ReadAllText(updateConfigPath);
-            JsonConvert.PopulateObject(json, this,
-                new JsonSerializerSettings()
-                {
-                    ObjectCreationHandling = ObjectCreationHandling.Replace
-                });
+            JsonConvert.PopulateObject(json, this, DefaultJsonSerializerSettingsCreate);
         }
 
         /// <summary>

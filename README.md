@@ -50,6 +50,10 @@ namespace NUnitConfigHandler
         [Option("List of mail addresses")]
         public List<string> MailRecipients { get; set; }
 
+        [Option("Level")]
+        [DefaultValue(true)]
+        public int Level { get; set; }
+
         public ExampleConfig()
         {
         }
@@ -99,7 +103,8 @@ INFO: Loading config file: 'exampleConfig.json'
     "joe@joe.com",
     "bill@bill.com"
   ],
-  "ParentConfigFile": "GenericExampleConfig.json"
+  "ParentConfigFile": "GenericExampleConfig.json",
+  "Level": 0
 }
 ```
 

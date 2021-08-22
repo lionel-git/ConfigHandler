@@ -51,16 +51,6 @@
             If set, display versions informations
             </summary>
         </member>
-        <member name="M:ConfigHandler.BaseConfig.SetDefaultJsonConfig(Newtonsoft.Json.JsonSerializerSettings)">
-            <summary>
-            Option to redefine serialisation settings (json options)
-            Default is:
-              MissingMemberHandling.Error
-              NullValueHandling.Ignore
-              DefaultValueHandling.Ignore
-            </summary>
-            <param name="settings">if settings is null use defaults settings</param>
-        </member>
         <member name="M:ConfigHandler.BaseConfig.IsVersionSet">
             <summary>
             Return true if Version is True or All

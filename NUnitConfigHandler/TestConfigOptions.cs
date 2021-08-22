@@ -18,7 +18,6 @@ namespace NUnitConfigHandler
         [SetUp]
         public void Setup()
         {
-            BaseConfig.SetDefaultJsonConfig();
             BaseConfig.SetLogger(new ConfigHandlerLogger());
         }
 
@@ -166,6 +165,7 @@ namespace NUnitConfigHandler
         public void TestException()
         {
             Assert.Throws<JsonSerializationException>(() => BaseConfig.LoadAll<ExampleConfig>("errorConfig.json"));
+            JsonConvert.DeserializeObject<ExampleConfig>(File.ReadAllText("errorConfig.json")); // Should not throw
         }
     }
 }

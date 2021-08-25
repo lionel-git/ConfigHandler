@@ -152,6 +152,9 @@ namespace NUnitConfigHandler
             var finalConfig = BaseConfig.LoadAll<ExampleConfig>("exampleConfig.json", args.ToArray());
             Console.WriteLine(finalConfig);
 
+            Assert.AreEqual(finalConfig.Level, 0);
+            Assert.AreEqual(finalConfig.Data, null);
+
             // Just o display an example of --Version output
             args = new List<string>()
             {

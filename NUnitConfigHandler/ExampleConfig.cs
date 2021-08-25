@@ -36,6 +36,9 @@ namespace NUnitConfigHandler
         [DefaultValue(true)]
         public int Level { get; set; }
 
+        [Option("Some data")]
+        public List<string> Data { get; set; }
+
         public ExampleConfig()
         {
         }

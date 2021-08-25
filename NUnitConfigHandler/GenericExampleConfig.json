@@ -2,5 +2,7 @@
   "BatchPriority": "High",
   "MailRecipients": [
     "test@test.com"
-  ]
+  ],
+  "Level": 1,
+  "Data": [ "abc", "def" ]
 }

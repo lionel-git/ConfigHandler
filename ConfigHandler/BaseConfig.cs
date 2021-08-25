@@ -78,12 +78,10 @@ namespace ConfigHandler
             DefaultValueHandling = DefaultValueHandling.Ignore
         };
 
-        private static readonly JsonSerializerSettings DefaultJsonSerializerSettingsCreate = new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings DefaultJsonSerializerSettingsPopulate = new JsonSerializerSettings()
         {
-            ObjectCreationHandling = ObjectCreationHandling.Replace,
             MissingMemberHandling = MissingMemberHandling.Error,
-            NullValueHandling = NullValueHandling.Ignore,
-            DefaultValueHandling = DefaultValueHandling.Ignore
+            ObjectCreationHandling = ObjectCreationHandling.Replace
         };
 
         /// <summary>
@@ -452,7 +450,7 @@ namespace ConfigHandler
         private void UpdateFromConfig(string updateConfigPath)
         {
             var json = File.ReadAllText(updateConfigPath);
-            JsonConvert.PopulateObject(json, this, DefaultJsonSerializerSettingsCreate);
+            JsonConvert.PopulateObject(json, this, DefaultJsonSerializerSettingsPopulate);
         }
 
         /// <summary>

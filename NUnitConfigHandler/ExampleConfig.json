@@ -3,5 +3,7 @@
   "MailRecipients": [
     "joe@joe.com",
     "bill@bill.com"
-  ]
+  ],
+  "Level": 0,
+  "Data": null
 }

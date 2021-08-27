@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Handle config file, option to override some parameters from command line</Description> 
+    <Description>Handle config file, option to override some parameters from command line</Description>
     <DocumentationFile>ConfigHandler.xml</DocumentationFile>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <PackageTags>Options Configuration</PackageTags>
@@ -20,10 +20,11 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <IncludeSymbols>true</IncludeSymbols>
-      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedAllSources>true</EmbedAllSources> 
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Remove="ConfigHandler.xml" />
     <None Remove="Directory.Build.props" />

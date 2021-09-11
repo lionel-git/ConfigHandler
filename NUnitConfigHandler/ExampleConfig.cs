@@ -39,6 +39,9 @@ namespace NUnitConfigHandler
         [Option("Some data")]
         public List<string> Data { get; set; }
 
+        [Option("Test date (nullable)", "yyyy/MM/dd")]
+        public DateTime? TestDateNullable { get; set; }
+
         public ExampleConfig()
         {
         }

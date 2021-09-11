@@ -149,7 +149,7 @@ namespace NUnitConfigHandler
                 @"--Help"
            //     @"--TestList2=a,b,c"     
             };
-            var finalConfig = BaseConfig.LoadAll<ExampleConfig>("exampleConfig.json", args.ToArray());
+            var finalConfig = BaseConfig.LoadAll<ExampleConfig>("ExampleConfig.json", args.ToArray());
             Console.WriteLine(finalConfig);
 
             Assert.AreEqual(finalConfig.Level, 0);

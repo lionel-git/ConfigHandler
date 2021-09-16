@@ -2,3 +2,9 @@
 
 Mettre au point ExampleConfig avec example plus réaliste + all options
 
+Dans le search des fichiers de config, chercher dans l'ordre
+- répertoire courant // ok
+- parent file directory // a passer en arg
+- asssembly directory // ok
+
+Replace File.ReadAllText()

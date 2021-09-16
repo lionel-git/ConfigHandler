@@ -165,6 +165,29 @@ namespace NUnitConfigHandler
         }
 
         [Test]
+        public void TestExampleForBadDirectory()
+        {
+            var oldDirectory = Environment.CurrentDirectory;
+            try
+            {
+                Environment.CurrentDirectory = @"\";
+                var finalConfig = BaseConfig.LoadAll<ExampleConfig>("ExampleConfig.json", null);
+                Console.WriteLine(finalConfig);
+            }
+            finally
+            {
+                Environment.CurrentDirectory = oldDirectory;
+            }
+        }
+
+        [Test]
+        public void TestExampleWithSubDirectory()
+        {
+            var finalConfig = BaseConfig.LoadAll<ExampleConfig>(@"SubDirectoryTest\ExampleConfig2.json", null);
+            Console.WriteLine(finalConfig);
+        }
+
+        [Test]
         public void TestException()
         {
             Assert.Throws<JsonSerializationException>(() => BaseConfig.LoadAll<ExampleConfig>("errorConfig.json"));

@@ -109,10 +109,47 @@ namespace ConfigHandler
             _logger = logger;
         }
 
-        private static T Load<T>(string path) where T : BaseConfig
+        private static Tuple<string, string> ReadAllTextWithPath(string path)
         {
-            var config = JsonConvert.DeserializeObject(File.ReadAllText(path), typeof(T), DefaultJsonSerializerSettings) as T;
-            config.ConfigFile = path;
+            if (Path.IsPathRooted(path))
+                return new Tuple<string, string>(path, File.ReadAllText(path));
+            else
+            {
+                var fullPath = Path.Combine(Environment.CurrentDirectory, path);
+                return new Tuple<string, string>(fullPath, File.ReadAllText(fullPath));
+            }
+        }
+
+        // If relative path, search from
+        // - Current directory
+        // - Parent config file directory
+        // - Entry Assembly location
+        private static Tuple<string, string> ReadAllText(string path, string fromFile)
+        {            
+            if (File.Exists(path))
+                return ReadAllTextWithPath(path);
+            string fileTest;
+            if (!string.IsNullOrWhiteSpace(fromFile))
+            {
+                fileTest = Path.Combine(Path.GetDirectoryName(fromFile), path);
+                if (File.Exists(fileTest))
+                    return ReadAllTextWithPath(fileTest);
+            }
+            fileTest = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), path);
+            if (File.Exists(fileTest))
+                return ReadAllTextWithPath(fileTest);
+            fileTest = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), path);
+            if (File.Exists(fileTest))
+                return ReadAllTextWithPath(fileTest);
+            else
+                throw new FileNotFoundException($"Cannot find file ='{path}' from='{fromFile}'");
+        }
+
+        private static T Load<T>(string path, string fromFile) where T : BaseConfig
+        {
+            var file = ReadAllText(path, fromFile);
+            var config = JsonConvert.DeserializeObject(file.Item2, typeof(T), DefaultJsonSerializerSettings) as T;
+            config.ConfigFile = file.Item1;
             return config;
         }
 
@@ -447,10 +484,10 @@ namespace ConfigHandler
                 return defaultConfigfile;
         }
 
-        private void UpdateFromConfig(string updateConfigPath)
+        private void UpdateFromConfig(string updateConfigPath, string fromFile)
         {
-            var json = File.ReadAllText(updateConfigPath);
-            JsonConvert.PopulateObject(json, this, DefaultJsonSerializerSettingsPopulate);
+            var json = ReadAllText(updateConfigPath, fromFile);
+            JsonConvert.PopulateObject(json.Item2, this, DefaultJsonSerializerSettingsPopulate);
         }
 
         /// <summary>
@@ -474,12 +511,15 @@ namespace ConfigHandler
         private static Stack<string> GetStackParents<T>(string configFile) where T : BaseConfig
         {
             var stack = new Stack<string>();
+            string previousFile = null;
             while (!string.IsNullOrEmpty(configFile))
             {
-                stack.Push(configFile);
+                var config = Load<T>(configFile, previousFile);
+                stack.Push(config.ConfigFile);
                 if (stack.Count > 10)
                     throw new ConfigHandlerException($"Recursion level exceeded: {stack.Count} => {string.Join(",", stack.ToList())}");
-                configFile = Load<T>(configFile).ParentConfigFile;
+                previousFile = config.ConfigFile;
+                configFile = config.ParentConfigFile;
             }
             return stack;
         }
@@ -503,7 +543,7 @@ namespace ConfigHandler
                 _logger?.InfoMsg($"Loading config file: '{configFileFinal}'");
                 var stack = GetStackParents<T>(configFileFinal);
                 while (stack.Count > 0)
-                    config.UpdateFromConfig(stack.Pop());
+                    config.UpdateFromConfig(stack.Pop(), config.ConfigFile);
             }
             config.UpdateFromCmdLine(args, false);
             return config;

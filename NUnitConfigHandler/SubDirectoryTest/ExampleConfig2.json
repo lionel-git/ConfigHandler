@@ -1,0 +1,11 @@
+﻿{
+  "ParentConfigFile": "GenericExampleConfig2.json",
+  "MailRecipients": [
+    "joe@joe.com",
+    "bill@bill.com"
+  ],
+  "Level": 0,
+  "Data": null,
+
+  "TestDateNullable":  "2021/08/25"
+}

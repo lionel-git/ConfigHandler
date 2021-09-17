@@ -7,4 +7,4 @@ Dans le search des fichiers de config, chercher dans l'ordre
 - parent file directory // a passer en arg
 - asssembly directory // ok
 
-Replace File.ReadAllText()
+Increase version + publish nuget

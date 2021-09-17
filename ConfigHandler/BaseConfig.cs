@@ -109,47 +109,36 @@ namespace ConfigHandler
             _logger = logger;
         }
 
-        private static Tuple<string, string> ReadAllTextWithPath(string path)
-        {
-            if (Path.IsPathRooted(path))
-                return new Tuple<string, string>(path, File.ReadAllText(path));
-            else
-            {
-                var fullPath = Path.Combine(Environment.CurrentDirectory, path);
-                return new Tuple<string, string>(fullPath, File.ReadAllText(fullPath));
-            }
-        }
-
         // If relative path, search from
         // - Current directory
         // - Parent config file directory
         // - Entry Assembly location
-        private static Tuple<string, string> ReadAllText(string path, string fromFile)
+        private static FileData ReadFileData(string path, string fromFile)
         {            
             if (File.Exists(path))
-                return ReadAllTextWithPath(path);
+                return new FileData(path);
             string fileTest;
             if (!string.IsNullOrWhiteSpace(fromFile))
             {
                 fileTest = Path.Combine(Path.GetDirectoryName(fromFile), path);
                 if (File.Exists(fileTest))
-                    return ReadAllTextWithPath(fileTest);
+                    return new FileData(fileTest);
             }
             fileTest = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), path);
             if (File.Exists(fileTest))
-                return ReadAllTextWithPath(fileTest);
+                return new FileData(fileTest);
             fileTest = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), path);
             if (File.Exists(fileTest))
-                return ReadAllTextWithPath(fileTest);
+                return new FileData(fileTest);
             else
                 throw new FileNotFoundException($"Cannot find file ='{path}' from='{fromFile}'");
         }
 
         private static T Load<T>(string path, string fromFile) where T : BaseConfig
         {
-            var file = ReadAllText(path, fromFile);
-            var config = JsonConvert.DeserializeObject(file.Item2, typeof(T), DefaultJsonSerializerSettings) as T;
-            config.ConfigFile = file.Item1;
+            var fileData = ReadFileData(path, fromFile);
+            var config = JsonConvert.DeserializeObject(fileData.Content, typeof(T), DefaultJsonSerializerSettings) as T;
+            config.ConfigFile = fileData.FullPath;
             return config;
         }
 
@@ -486,8 +475,8 @@ namespace ConfigHandler
 
         private void UpdateFromConfig(string updateConfigPath, string fromFile)
         {
-            var json = ReadAllText(updateConfigPath, fromFile);
-            JsonConvert.PopulateObject(json.Item2, this, DefaultJsonSerializerSettingsPopulate);
+            var json = ReadFileData(updateConfigPath, fromFile);
+            JsonConvert.PopulateObject(json.Content, this, DefaultJsonSerializerSettingsPopulate);
         }
 
         /// <summary>

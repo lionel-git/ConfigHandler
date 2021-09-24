@@ -158,10 +158,12 @@ namespace NUnitConfigHandler
             // Just o display an example of --Version output
             args = new List<string>()
             {
-                @"--Version"
+                "--Version",
+                "--TestDateNullable=2021-08-17"
            //     @"--TestList2=a,b,c"     
             };
-            BaseConfig.LoadAll<ExampleConfig>(null, args.ToArray());
+            var config = BaseConfig.LoadAll<ExampleConfig>(null, args.ToArray());
+            Assert.IsTrue(config.TestDateNullable != null);
         }
 
         [Test]

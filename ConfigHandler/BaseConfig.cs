@@ -386,7 +386,7 @@ namespace ConfigHandler
                 var targetType = property.PropertyType;
                 if (propertyValue != null)
                 {
-                    if (targetType.IsGenericType)
+                    if (targetType.IsGenericType && targetType.Name!="Nullable`1")
                     {
                         if (targetType.GetGenericArguments().Length == 1)
                         {
